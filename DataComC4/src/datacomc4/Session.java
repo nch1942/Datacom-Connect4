@@ -12,7 +12,11 @@ package datacomc4;
 public class Session {
     private Game game[];
     
-    public Session(byte gameId, Player ai, Player user){
+    public Session(){
+        
+    }
+    
+    public void createNewGame(byte gameId){
         
     }
     
