@@ -1,0 +1,35 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package datacomc4;
+
+/**
+ *
+ * @author 1635547
+ */
+public class C4Client {
+    private Player player;
+    private GUI gui;
+    
+    public C4Client(){
+        
+    }
+    
+    public void requestServerConnection(){
+        
+    }
+    
+    public void receiveBoard(){
+        
+    }
+    
+    public void sendPositionToken(){
+        
+    }
+    
+    public byte[] convertSizeOfArray(){
+        return null;
+    } 
+}
