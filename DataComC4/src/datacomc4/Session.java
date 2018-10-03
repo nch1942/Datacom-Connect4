@@ -5,12 +5,18 @@
  */
 package datacomc4;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author 1635547
  */
 public class Session {
     private Game game[];
+    
     
     public Session(){
         
@@ -23,4 +29,6 @@ public class Session {
     public Game getGame(byte gameId){
         return null;
     }
+    
+    
 }
