@@ -13,7 +13,13 @@ public class Board {
     private byte[][] board;
     
     public Board(){
-        
+        board = new byte[6][];
+        for(int i = 0; i < 6; i++){
+            board[i] = new byte[7];
+            for(int j = 0; j < 7; j++){
+                board[i][j] = 0;
+            }
+        }
     }
     
     public void insertToken(byte b){
