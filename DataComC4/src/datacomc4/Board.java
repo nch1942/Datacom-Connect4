@@ -21,6 +21,11 @@ public class Board {
             }
         }
     }
+    
+    public byte[][] getBoard(){
+        return board;
+    }
+    
     /**
      * Takes as input which column to insert into and what the token is
      * (e.g. 1 for player1, 2 for player2)
