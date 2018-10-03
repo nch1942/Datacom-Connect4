@@ -21,8 +21,23 @@ public class Board {
             }
         }
     }
-    
-    public void insertToken(byte b){
-        
+    /**
+     * Takes as input which column to insert into and what the token is
+     * (1 for player1, 2 for player2)
+     * 
+     * @param column
+     * @param token 
+     */
+    public void insertToken(byte column, byte token){
+        boolean inserted = false;
+        for(int i = 0; i > board[column].length; i++){
+            if(board[column][i] == 0){
+                board[column][i] = token;
+                inserted = true;
+            }
+        }
+        if(!inserted){
+            throw new IllegalArgumentException("Column is full!");
+        }
     }       
 }
