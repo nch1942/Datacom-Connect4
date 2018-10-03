@@ -1,12 +1,21 @@
 
+<<<<<<< HEAD
 package datacomc4;
 import java.util.*;
+=======
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+>>>>>>> started logic behind server
 /**
  *
  * @author 1636522
  */
 public class Session {
     private List<Game> games;
+    
     
     public Session(){
         games = new ArrayList<Game>();
@@ -44,4 +53,6 @@ public class Session {
         }
         return game;
     }
+    
+    
 }
