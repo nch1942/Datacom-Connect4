@@ -21,4 +21,8 @@ public class Game {
     public Board getBoard(){
         return board;
     }
+    
+    public byte getId(){
+        return id;
+    }
 }
