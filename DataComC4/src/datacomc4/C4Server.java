@@ -64,7 +64,7 @@ public class C4Server {
             
             //Recevieve until client closes connection (-1)
             while ((receivedMessageSize = in.read(byteBuffer)) != -1){
-                //Check user want to continue playing (
+                //Check user want to continue playing (2)
                 if (byteBuffer[0] == (byte)2){
                     
                 }
