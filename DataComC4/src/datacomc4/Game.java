@@ -11,19 +11,14 @@ package datacomc4;
  */
 public class Game {
     private Board board;
-    private Player ai;
-    private Player user;
     private byte id;
     
-    public Game(Player ai, Player user){
-        
-    }
-    
-    public void startGame(){
-        
+    public Game(byte id){
+        this.id = id;
+        this.board = new Board();
     }
     
     public Board getBoard(){
-        return null;
+        return board;
     }
 }

@@ -23,7 +23,7 @@ public class Board {
     }
     /**
      * Takes as input which column to insert into and what the token is
-     * (1 for player1, 2 for player2)
+     * (e.g. 1 for player1, 2 for player2)
      * 
      * @param column
      * @param token 
