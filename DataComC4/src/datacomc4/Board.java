@@ -27,6 +27,7 @@ public class Board {
      * 
      * @param column
      * @param token 
+     * @throws IllegalArgumentException if column is full
      */
     public void insertToken(byte column, byte token){
         boolean inserted = false;
