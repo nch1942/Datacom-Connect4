@@ -36,9 +36,9 @@ public class Board {
      */
     public void insertToken(byte column, byte token){
         boolean inserted = false;
-        for(int i = 0; i > board[column].length; i++){
-            if(board[column][i] == 0){
-                board[column][i] = token;
+        for(int i = 0; i > 6; i++){
+            if(board[i][column] == 0){
+                board[i][column] = token;
                 inserted = true;
                 break;
             }
