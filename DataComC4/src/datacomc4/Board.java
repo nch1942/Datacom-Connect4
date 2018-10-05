@@ -40,6 +40,7 @@ public class Board {
             if(board[column][i] == 0){
                 board[column][i] = token;
                 inserted = true;
+                break;
             }
         }
         if(!inserted){
