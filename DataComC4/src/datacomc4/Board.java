@@ -16,7 +16,7 @@ public class Board {
         
     }
     
-    public void insertToken(byte b){
+    public void insertToken(byte column, byte token){
         
     }       
 }
