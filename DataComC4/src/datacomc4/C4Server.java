@@ -48,7 +48,7 @@ public class C4Server {
         session = new Session();
         session.createNewGame((byte)0);
         game = session.getGame((byte)0);
-        player = new AIPlayer();
+        player = new AIPlayer(game);
     }
 
     private void serviceConnection() throws IOException {
@@ -82,7 +82,7 @@ public class C4Server {
                     //insert new client token
                     board.insertToken(byteBuffer[1], (byte)1);
                     //AI player plays
-                    byte tokenInput = player.play();
+                    byte tokenInput = player.play((byte)0);
                     //Send client new move
                     out.write(new byte[]{1,tokenInput}, 0, receivedMessageSize);
                 } 

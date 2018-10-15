@@ -1,5 +1,6 @@
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 package datacomc4;
 import java.util.*;
 =======
@@ -9,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 >>>>>>> started logic behind server
+=======
+>>>>>>> change constructor
 /**
  *
  * @author 1636522
