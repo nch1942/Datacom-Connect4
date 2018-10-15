@@ -11,6 +11,7 @@ package datacomc4;
  */
 public class HumanPlayer implements Player {
     private Game game;
+    
 
     /**
      * Public constructor to human player - takes as input current game playing

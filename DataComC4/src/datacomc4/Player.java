@@ -10,5 +10,5 @@ package datacomc4;
  * @author 1635547
  */
 public interface Player {
-    public byte play();
+    public byte play(byte chosen);
 }

@@ -11,13 +11,24 @@ package datacomc4;
  */
 public class AIPlayer implements Player{
 
-    public AIPlayer(){
-        
+    private Game game;
+    
+    /**
+     * Public constructor that takes as input the game AIPlayer is currently playing
+     * @param game 
+     */
+    public AIPlayer(Game game){
+        this.game = game;
     }
     
+    /**
+     * 
+     * @param chosen
+     */
     @Override
-    public void play() {
+    public byte play(byte chosen) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
     
 }
