@@ -41,5 +41,6 @@ public class Board {
         }
         if(!inserted){
             throw new IllegalArgumentException("Column is full!");
-        }}       
+        }
+    }       
 }

@@ -6,12 +6,18 @@ import java.net.ServerSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author 1636522
  */
 public class Session {
     private List<Game> games;
+    
     
     
     public Session(){
