@@ -6,18 +6,29 @@
 package datacomc4;
 
 /**
- *
+ * Human player class implements Player - overrides the play method
  * @author 1635547
  */
 public class HumanPlayer implements Player {
+    private Game game;
 
-    public HumanPlayer(){
-        
+    /**
+     * Public constructor to human player - takes as input current game playing
+     * @param game 
+     */
+    public HumanPlayer(Game game){
+        this.game = game;
     }
     
+    /**
+     * Play method inserts token chosen by the player into the board of the game
+     * @param chosen
+     * @return 
+     */
     @Override
-    public byte play() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public byte play(byte chosen) {
+        game.getBoard().insertToken(chosen, (byte)1);
+        return chosen;
     }
     
 }
