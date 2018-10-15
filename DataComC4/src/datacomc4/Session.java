@@ -1,17 +1,11 @@
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 package datacomc4;
 import java.util.*;
-=======
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
->>>>>>> started logic behind server
-=======
->>>>>>> change constructor
 /**
  *
  * @author 1636522
@@ -55,7 +49,5 @@ public class Session {
             throw new IllegalArgumentException("Requested game does not exist!");
         }
         return game;
-    }
-    
-    
+    } 
 }

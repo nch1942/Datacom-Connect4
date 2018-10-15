@@ -30,5 +30,38 @@ public class AIPlayer implements Player{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    
+    private byte getPositionNextToken(){
+        byte[][] board = game.getBoard().getBoard();
+        byte token = -1;
+        for (int row = 5; row > -1; row--){
+            //Check for 3 in a row - to win
+            for(int column = 0; column  < 4; column++){
+                if (board[row][column] == 2 && board[row][column] == board[row][column+1] && board[row][column+1] == board[row][column+2] && board[row][column+3] == 0){
+                    token =(byte)(column+3);
+                }
+            }
+            for(int column = 6; column > 0; column--){
+                if (board[row][column] == 2 && board[row][column] == board[row][column -1] && board[row][column-1] == board[row][column-2] && board[row][column-3] == 0){
+                    token = (byte)(column-3);
+                }
+            }
+            //Check for 3 in a row - block other player
+            for(int column = 0; column  < 4; column++){
+                if (board[row][column] == 1 && board[row][column] == board[row][column+1] && board[row][column+1] == board[row][column+2] && board[row][column+3] == 0){
+                    token =(byte)(column+3);
+                }
+            }
+            for(int column = 6; column > 0; column--){
+                if (board[row][column] == 1 && board[row][column] == board[row][column -1] && board[row][column-1] == board[row][column-2] && board[row][column-3] == 0){
+                    token = (byte)(column-3);
+                }
+            }
+        }
+        for (int column = 0; column < 7; column++){
+            for (int row = 5; row > 0; row--){
+                
+            }
+        }
+        return token;
+    }
 }
