@@ -10,7 +10,6 @@ package datacomc4;
  * @author 1635547
  */
 public class AIPlayer implements Player{
-
     private Game game;
     
     /**
