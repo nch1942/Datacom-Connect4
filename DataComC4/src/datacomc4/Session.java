@@ -1,12 +1,24 @@
 
 package datacomc4;
 import java.util.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author 1636522
  */
 public class Session {
     private List<Game> games;
+    
+    
     
     public Session(){
         games = new ArrayList<Game>();
@@ -43,5 +55,5 @@ public class Session {
             throw new IllegalArgumentException("Requested game does not exist!");
         }
         return game;
-    }
+    } 
 }
