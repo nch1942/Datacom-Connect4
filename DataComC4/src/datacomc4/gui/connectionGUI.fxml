@@ -9,10 +9,10 @@
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="datacomc4.gui.ConnectionGUIController">
     <children>
         <Button fx:id="connectButton" layoutX="68.0" layoutY="209.0" mnemonicParsing="false" onAction="#startGame" text="Connect" />
-        <TextField layoutX="70.0" layoutY="100.0" />
+        <TextField fx:id="ipInput" layoutX="70.0" layoutY="100.0" />
         <Label layoutX="70.0" layoutY="32.0" text="Welcome to Connect 4" />
         <Label layoutX="70.0" layoutY="83.0" text="IP Address" />
-        <TextField layoutX="70.0" layoutY="163.0" />
+        <TextField fx:id="portInput" layoutX="70.0" layoutY="163.0" />
         <Label layoutX="75.0" layoutY="146.0" text="Port Number" />
     </children>
 </AnchorPane>

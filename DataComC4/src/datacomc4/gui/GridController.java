@@ -24,51 +24,49 @@ import javafx.scene.shape.Circle;
 /**
  * FXML Controller class
  *
- * @author C.Hoang
+ * @author Crusader2142
  */
-public class BasicGridController implements Initializable {
+public class GridController implements Initializable {
 
     @FXML
     private GridPane grid;
     @FXML
-    private Label testArea;
+    private Label coordinate;
+    @FXML
+    private Label turnDisplay;
+    @FXML
+    private Circle turnCircle;
+    @FXML
+    private Label playerCounter;
+    @FXML
+    private Label aiCounter;
+
     private int ROW = 0;
     private int COL = 0;
     private boolean color = true;
-
 
     /**
      * Initializes the controller class.
      */
     @Override
-
     public void initialize(URL url, ResourceBundle rb) {
-
         ROW = grid.getRowConstraints().size();
         COL = grid.getColumnConstraints().size();
         System.out.println("ROW is: " + ROW + " COL is " + COL);
         addCircleToGrid();
-//        Circle a = (Circle) grid.getChildren().get(1);
-//        a.setFill(Paint.valueOf("Red"));
+        // TODO
     }
 
-    /**
-     * Add 42 default circle to the Grid, each with black background color.
-     * Circle is centered in each cell, radius is 78
-     */
     private void addCircleToGrid() {
-
         for (int rowCount = 0; rowCount < ROW; rowCount++) {
             for (int colCount = 0; colCount < COL; colCount++) {
-                Circle circle = new Circle(78, Paint.valueOf("black"));
+                Circle circle = new Circle(32, Paint.valueOf("black"));
                 circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent e) {
                         onClickHandler(e);
                     }
                 });
-
-//                circle.setMouseTransparent(true);
                 grid.add(circle, colCount, rowCount);
                 GridPane.setHgrow(circle, Priority.ALWAYS);
                 GridPane.setVgrow(circle, Priority.ALWAYS);
@@ -77,28 +75,19 @@ public class BasicGridController implements Initializable {
             }
         }
         System.out.println("Children size is: " + grid.getChildren().size());
-        System.out.println("Indext at 0 is: " + grid.getChildren().get(0).getClass());
+        System.out.println("Indext at 0 is: " + grid.getChildren().get(0));
         System.out.println("Indext at 1 is: " + grid.getChildren().get(1));
         Circle a = (Circle) grid.getChildren().get(1);
         a.setFill(Paint.valueOf("Red"));
     }
 
-
     @FXML
     private void onClickHandler(MouseEvent e) {
-//        System.out.println("e is: " + e);
-//        System.out.println("target is: " + e.getTarget());
-//        System.out.println("source is: " + e.getSource());
         Circle source = (Circle) e.getSource();
-//        System.out.println("source is: " + source.parentProperty());
-
-//        System.out.println(source.getFill());
 
         int selectRowIndex = GridPane.getRowIndex(source);
         int selectColumnIndex = GridPane.getColumnIndex(source);
-        testArea.setText("ROW: " + selectRowIndex + " COL: " + selectColumnIndex);
-//        System.out.println(">><<");
-//        System.out.println(grid.getChildren().get(1));
+        coordinate.setText("ROW: " + selectRowIndex + " COL: " + selectColumnIndex);
 
         checkCircle(selectColumnIndex);
     }
@@ -110,6 +99,7 @@ public class BasicGridController implements Initializable {
         int lastRowIndex = col + ((ROW - 1) * COL);
 
         System.out.println("Column is: " + col + " AND last row is: " + lastRowIndex);
+        System.out.println("Children size is: " + grid.getChildren().size());
 
         ObservableList<Node> childrens = grid.getChildren();
         Node firstRow = childrens.get(col);
@@ -120,7 +110,6 @@ public class BasicGridController implements Initializable {
             switchColor(lastRow);
         } else if (!isBlack(firstRow)) {
             System.out.println("First Row");
-            return;
         } else {
             System.out.println("Loop");
             for (int i = lastRowIndex - COL; i > 0; i -= COL) {
@@ -132,8 +121,6 @@ public class BasicGridController implements Initializable {
                     System.out.println("-------");
                     switchColor(temp);
                     break;
-                } else {
-                    System.out.println("FUCKED");
                 }
             }
         }
@@ -147,10 +134,7 @@ public class BasicGridController implements Initializable {
      */
     private boolean isBlack(Node node) {
         Circle temp = (Circle) node;
-        if (temp.getFill() == Paint.valueOf("black")) {
-            return true;
-        }
-        return false;
+        return temp.getFill() == Paint.valueOf("black");
     }
 
     /**

@@ -33,7 +33,7 @@ public class C4Client {
     }
 
     public void requestServerConnection() throws IOException {
-        // Set packet to a [0,0]
+        // Set packet to a [0,0] => Request a connection
         setPackage(packet, 0, 0);
         Socket socket = new Socket();
         // New socket Object, with timeout in 15s
@@ -43,9 +43,7 @@ public class C4Client {
         OutputStream out = socket.getOutputStream();
         // Send the packet to server
         out.write(packet);
-
         boolean stilPlaying = true;
-
 
         int totalByteReceived = 0;
         int byteReceived;
@@ -58,7 +56,7 @@ public class C4Client {
             }
             if (checkPackage(packet, 0)) {
                 // Make a move method goes here
-
+                sendMove(packet, portNumber);
             }
             else if (checkPackage(packet, 1)) {
                 // Update board method goes here
@@ -66,16 +64,10 @@ public class C4Client {
             else if (checkPackage(packet, 2)) {
                 stilPlaying = false;
             }
-            
         }
         socket.close();
-
-
     }
 
-    public void receiveBoard() {
-
-    }
 
     private void sendMove(byte[] packet, int columnCoor) {
         setPackage(packet, 1, columnCoor);
@@ -93,6 +85,13 @@ public class C4Client {
         packet[1] = (byte) value;
     }
     
+    /**
+     * Check if a package is for requesting connection, make move, or quit
+     * 1 i
+     * @param packet
+     * @param offset
+     * @return 
+     */
     private boolean checkPackage(byte[] packet, int offset) {
         if (packet.length != 2) {
             throw new IllegalArgumentException("Wrong packet format");

@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -27,8 +28,10 @@ public class ConnectionGUIController implements Initializable {
 
     @FXML
     private Button connectButton;
-    
-    
+    private TextField ipInput;
+
+
+
     /**
      * Initializes the controller class.
      */
@@ -41,12 +44,15 @@ public class ConnectionGUIController implements Initializable {
     private void startGame(ActionEvent event) throws IOException {
         Stage primaryStage = (Stage) connectButton.getScene().getWindow();
         primaryStage.close();
+//        Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("basicGrid.fxml"));
+
         Scene scene = new Scene(root);
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Connect Four");
         stage.show();
+
     }
 
 }
