@@ -35,6 +35,7 @@ public class BasicGridController implements Initializable {
     private Label testArea;
     private int ROW = 0;
     private int COL = 0;
+    private boolean color = true;
 
 
     /**
@@ -155,7 +156,14 @@ public class BasicGridController implements Initializable {
      */
     private void switchColor(Node node) {
         Circle temp = (Circle) node;
-        temp.setFill(Paint.valueOf("Red"));
+        if (color) {
+            temp.setFill(Paint.valueOf("Red"));
+            color = false;
+        }
+        else {
+            temp.setFill(Paint.valueOf("Blue"));
+            color = true;
+        }
     }
 
 }
