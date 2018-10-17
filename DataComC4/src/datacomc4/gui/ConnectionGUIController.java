@@ -44,8 +44,8 @@ public class ConnectionGUIController implements Initializable {
     private void startGame(ActionEvent event) throws IOException {
         Stage primaryStage = (Stage) connectButton.getScene().getWindow();
         primaryStage.close();
-//        Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
-        Parent root = FXMLLoader.load(getClass().getResource("basicGrid.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
+//        Parent root = FXMLLoader.load(getClass().getResource("basicGrid.fxml"));
 
         Scene scene = new Scene(root);
         Stage stage = new Stage();

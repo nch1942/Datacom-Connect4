@@ -43,7 +43,9 @@ public class GridController implements Initializable {
 
     private int ROW = 0;
     private int COL = 0;
-    private boolean color = true;
+    private boolean isRed = true;
+    private final String humanTurn = "Human";
+    private final String aiTurn = "AI";
 
     /**
      * Initializes the controller class.
@@ -52,9 +54,8 @@ public class GridController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ROW = grid.getRowConstraints().size();
         COL = grid.getColumnConstraints().size();
-        System.out.println("ROW is: " + ROW + " COL is " + COL);
+//        System.out.println("ROW is: " + ROW + " COL is " + COL);
         addCircleToGrid();
-        // TODO
     }
 
     private void addCircleToGrid() {
@@ -74,11 +75,6 @@ public class GridController implements Initializable {
                 GridPane.setValignment(circle, VPos.CENTER);
             }
         }
-        System.out.println("Children size is: " + grid.getChildren().size());
-        System.out.println("Indext at 0 is: " + grid.getChildren().get(0));
-        System.out.println("Indext at 1 is: " + grid.getChildren().get(1));
-        Circle a = (Circle) grid.getChildren().get(1);
-        a.setFill(Paint.valueOf("Red"));
     }
 
     @FXML
@@ -95,30 +91,30 @@ public class GridController implements Initializable {
     private void checkCircle(int col) {
         // For GridPane, Col start at 1
         // (Row - 1 * Col) will give you the max row of correspondong Col
-        col += 1;
+//        col += 1;
         int lastRowIndex = col + ((ROW - 1) * COL);
 
-        System.out.println("Column is: " + col + " AND last row is: " + lastRowIndex);
-        System.out.println("Children size is: " + grid.getChildren().size());
+//        System.out.println("Column is: " + col + " AND last row is: " + lastRowIndex);
+//        System.out.println("Children size is: " + grid.getChildren().size());
 
         ObservableList<Node> childrens = grid.getChildren();
         Node firstRow = childrens.get(col);
         Node lastRow = childrens.get(lastRowIndex);
 
         if (isBlack(lastRow)) {
-            System.out.println("Last Row");
+//            System.out.println("Last Row");
             switchColor(lastRow);
         } else if (!isBlack(firstRow)) {
-            System.out.println("First Row");
+//            System.out.println("First Row");
         } else {
             System.out.println("Loop");
-            for (int i = lastRowIndex - COL; i > 0; i -= COL) {
+            for (int i = lastRowIndex - COL; i >= 0; i -= COL) {
                 System.out.println("Row is: " + i);
                 Node temp = childrens.get(i);
                 System.out.println(temp);
                 if (isBlack(childrens.get(i))) {
-                    System.out.println("SWITCH\n");
-                    System.out.println("-------");
+//                    System.out.println("SWITCH\n");
+//                    System.out.println("-------");
                     switchColor(temp);
                     break;
                 }
@@ -144,12 +140,22 @@ public class GridController implements Initializable {
      */
     private void switchColor(Node node) {
         Circle temp = (Circle) node;
-        if (color) {
+        /*
+        If isRed true, set the color of the circle to red.
+        Then set the color of "turn indicator" to blue.
+        "Turn Indicator" is a small circle outside the GridPane to indicate 
+        the color of whoever's turn is playing (red for player, blue for AI)
+         */
+        if (isRed) {
             temp.setFill(Paint.valueOf("Red"));
-            color = false;
+            turnCircle.setFill(Paint.valueOf("Blue"));
+            turnDisplay.setText(aiTurn);
+            isRed = false;
         } else {
             temp.setFill(Paint.valueOf("Blue"));
-            color = true;
+            turnCircle.setFill(Paint.valueOf("Red"));
+            turnDisplay.setText(humanTurn);
+            isRed = true;
         }
     }
 
