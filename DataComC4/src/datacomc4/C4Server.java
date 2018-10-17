@@ -27,6 +27,7 @@ public class C4Server {
     private InputStream in;
     private OutputStream out;
     private Game game;
+    private int countGames;
 
     public C4Server(int serverPort) throws IOException {
         //Set seerver port we want t listen to
@@ -46,7 +47,8 @@ public class C4Server {
     
     private void beginSession(){
         session = new Session();
-        session.createNewGame((byte)0);
+        session.createNewGame((byte)countGames);
+        countGames++;
         game = session.getGame((byte)0);
         player = new AIPlayer(game);
     }
@@ -68,6 +70,7 @@ public class C4Server {
                 //Client can start session
                 if(byteBuffer[0] == (byte)0){
                     //Begin session
+                    System.out.println("Session started");
                     beginSession();
                     out.write(new byte[]{0,0}, 0, receivedMessageSize);
                 }
@@ -76,6 +79,13 @@ public class C4Server {
                     System.out.println("Thank you for playing");
                     clientSocket.close();
                 } 
+                //Client won - create new game
+                else if (byteBuffer[0] == (byte)3){
+                    System.out.println("Client won - new game can start");
+                    session.createNewGame((byte)countGames);
+                    game = session.getGame((byte)countGames);
+                    countGames++;
+                }
                 //Client wants to make a move
                 else if (byteBuffer[0] == (byte)1){
                     board = game.getBoard();
@@ -83,6 +93,11 @@ public class C4Server {
                     board.insertToken(byteBuffer[1], (byte)1);
                     //AI player plays
                     byte tokenInput = player.play((byte)0);
+                    //Check for win 
+                    if(game.playerHasWon((byte)2)){
+                       //Send client server won - do not close socket yet if they want to play a new game
+                        out.write(new byte[]{1,tokenInput}, 0, receivedMessageSize);
+                    }
                     //Send client new move
                     out.write(new byte[]{1,tokenInput}, 0, receivedMessageSize);
                 } 
