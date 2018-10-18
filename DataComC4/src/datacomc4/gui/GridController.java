@@ -46,6 +46,7 @@ public class GridController implements Initializable {
     private boolean isRed = true;
     private final String humanTurn = "Human";
     private final String aiTurn = "AI";
+    private Circle lastHighlight = new Circle();
 
     /**
      * Initializes the controller class.
@@ -62,12 +63,13 @@ public class GridController implements Initializable {
         for (int rowCount = 0; rowCount < ROW; rowCount++) {
             for (int colCount = 0; colCount < COL; colCount++) {
                 Circle circle = new Circle(32, Paint.valueOf("black"));
-                circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent e) {
-                        onClickHandler(e);
-                    }
-                });
+                addHandlerForCircle(circle);
+//                circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//                    @Override
+//                    public void handle(MouseEvent e) {
+//                        onClickHandler(e);
+//                    }
+//                });
                 grid.add(circle, colCount, rowCount);
                 GridPane.setHgrow(circle, Priority.ALWAYS);
                 GridPane.setVgrow(circle, Priority.ALWAYS);
@@ -77,14 +79,37 @@ public class GridController implements Initializable {
         }
     }
 
-    @FXML
-    private void onClickHandler(MouseEvent e) {
+    private void addHandlerForCircle(Circle circle) {
+        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                onClickHandler(e);
+            }
+        });
+
+        circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                onHoverHandler(e);
+            }
+        });
+    }
+
+    private void onHoverHandler(MouseEvent e) {
         Circle source = (Circle) e.getSource();
 
         int selectRowIndex = GridPane.getRowIndex(source);
         int selectColumnIndex = GridPane.getColumnIndex(source);
+        selectRowIndex++;
+        selectColumnIndex++;
         coordinate.setText("ROW: " + selectRowIndex + " COL: " + selectColumnIndex);
+        selectColumnIndex--;
+        checkPotentialCircle(selectColumnIndex);
+    }
 
+    private void onClickHandler(MouseEvent e) {
+        Circle source = (Circle) e.getSource();
+        int selectColumnIndex = GridPane.getColumnIndex(source);
         checkCircle(selectColumnIndex);
     }
 
@@ -107,11 +132,11 @@ public class GridController implements Initializable {
         } else if (!isBlack(firstRow)) {
 //            System.out.println("First Row");
         } else {
-            System.out.println("Loop");
+//            System.out.println("Loop");
             for (int i = lastRowIndex - COL; i >= 0; i -= COL) {
-                System.out.println("Row is: " + i);
+//                System.out.println("Row is: " + i);
                 Node temp = childrens.get(i);
-                System.out.println(temp);
+//                System.out.println(temp);
                 if (isBlack(childrens.get(i))) {
 //                    System.out.println("SWITCH\n");
 //                    System.out.println("-------");
@@ -120,6 +145,7 @@ public class GridController implements Initializable {
                 }
             }
         }
+        checkPotentialCircle(col);
     }
 
     /**
@@ -157,6 +183,48 @@ public class GridController implements Initializable {
             turnDisplay.setText(humanTurn);
             isRed = true;
         }
+//        grid.setDisable(true);
+    }
+
+
+
+    private void checkPotentialCircle(int col) {
+        int lastRowIndex = col + ((ROW - 1) * COL);
+        Node temp = null;
+
+        ObservableList<Node> childrens = grid.getChildren();
+        Node firstRow = childrens.get(col);
+        Node lastRow = childrens.get(lastRowIndex);
+
+        if (isBlack(lastRow)) {
+            highlightCircle(lastRow);
+        } else if (!isBlack(firstRow)) {
+            temp = childrens.get(col);
+            Circle tempCircle = (Circle) temp;
+            tempCircle.setStroke(Paint.valueOf("black"));
+            tempCircle.setStrokeWidth(1);
+
+        } else {
+            for (int i = lastRowIndex - COL; i >= 0; i -= COL) {
+                temp = childrens.get(i);
+                if (isBlack(childrens.get(i))) {
+                    highlightCircle(temp);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void highlightCircle(Node node) {
+        Circle temp = (Circle) node;
+
+        if (temp != lastHighlight) {
+            temp.setStrokeWidth(4.5);
+            temp.setStroke(Paint.valueOf("Aqua"));
+            lastHighlight.setStroke(Paint.valueOf("black"));
+            lastHighlight.setStrokeWidth(1);
+        }
+        lastHighlight = temp;
     }
 
 }

@@ -30,5 +30,4 @@ public class MainApp extends Application{
         primaryStage.setTitle("Connect Four Server");
         primaryStage.show();
     }
-
 }

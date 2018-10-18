@@ -116,20 +116,20 @@ public class BasicGridController implements Initializable {
         Node lastRow = childrens.get(lastRowIndex);
 
         if (isBlack(lastRow)) {
-            System.out.println("Last Row");
+//            System.out.println("Last Row");
             switchColor(lastRow);
         } else if (!isBlack(firstRow)) {
-            System.out.println("First Row");
+//            System.out.println("First Row");
             return;
         } else {
-            System.out.println("Loop");
+//            System.out.println("Loop");
             for (int i = lastRowIndex - COL; i > 0; i -= COL) {
-                System.out.println("Row is: " + i);
+//                System.out.println("Row is: " + i);
                 Node temp = childrens.get(i);
                 System.out.println(temp);
                 if (isBlack(childrens.get(i))) {
-                    System.out.println("SWITCH\n");
-                    System.out.println("-------");
+//                    System.out.println("SWITCH\n");
+//                    System.out.println("-------");
                     switchColor(temp);
                     break;
                 } else {
@@ -163,6 +163,7 @@ public class BasicGridController implements Initializable {
         if (color) {
             temp.setFill(Paint.valueOf("Red"));
             color = false;
+            grid.setDisable(true);
         } else {
             temp.setFill(Paint.valueOf("Blue"));
             color = true;
