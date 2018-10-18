@@ -20,16 +20,18 @@ public class C4Client {
 
     String IP;
     int portNumber;
-    private Player player;
-    private GUI gui;
-    private Session session;
-    private final byte[] packet = new byte[2];
 
-    public C4Client(String IP, int portNumber, byte[] packet, Player player, GUI gui) {
+    private Player player;
+    private Game game;
+    private final byte[] packet = new byte[2];
+    private boolean isConnected = false;
+
+    public C4Client(String IP, int portNumber) {
         this.IP = IP;
         this.portNumber = portNumber;
-        this.player = player;
-        this.gui = gui;
+
+        this.game = new Game((byte) 1);
+        this.player = new HumanPlayer(game);
     }
 
     public void requestServerConnection() throws IOException {
@@ -54,27 +56,30 @@ public class C4Client {
                 }
                 totalByteReceived += byteReceived;
             }
-            if (checkPackage(packet, 0)) {
-                // Make a move method goes here
-                sendMove(packet, portNumber);
-            }
-            else if (checkPackage(packet, 1)) {
-                // Update board method goes here
-            }
-            else if (checkPackage(packet, 2)) {
-                stilPlaying = false;
+            if (checkPackage(packet, 0) && (int) packet[1] == 0) {
+                isConnected = true;
+                System.out.println("Connect Successful");
+            } else {
+                socket.close();
+                System.out.println("Connect FAIL");
             }
         }
-        socket.close();
     }
 
-
-    private void sendMove(byte[] packet, int columnCoor) {
-        setPackage(packet, 1, columnCoor);
+    public void sendMove(Socket socket, byte[] packet, int columnCoor) throws IOException {
+        if (isConnected) {
+            OutputStream out = socket.getOutputStream();
+            setPackage(packet, 1, columnCoor);
+            out.write(packet);
+        }
     }
 
     public byte[] convertSizeOfArray() {
         return null;
+    }
+
+    public boolean getConnectionStatus() {
+        return isConnected;
     }
 
     private void setPackage(byte[] packet, int offset, int value) {
@@ -84,19 +89,19 @@ public class C4Client {
         packet[0] = (byte) offset;
         packet[1] = (byte) value;
     }
-    
+
     /**
-     * Check if a package is for requesting connection, make move, or quit
-     * 1 i
+     * Check if a package is for requesting connection, make move, or quit 1 i
+     *
      * @param packet
      * @param offset
-     * @return 
+     * @return
      */
     private boolean checkPackage(byte[] packet, int offset) {
         if (packet.length != 2) {
             throw new IllegalArgumentException("Wrong packet format");
         }
-        if (packet[0] == offset) {
+        if ((int) packet[0] == offset) {
             return true;
         }
         return false;

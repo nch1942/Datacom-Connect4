@@ -5,6 +5,7 @@
  */
 package datacomc4.gui;
 
+import datacomc4.C4Client;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,6 +41,8 @@ public class ConnectionGUIController implements Initializable {
     @FXML
     private Label portWarn;
 
+    private C4Client client;
+
     private static final Pattern PATTERN = Pattern.compile(
             "^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
@@ -56,25 +59,33 @@ public class ConnectionGUIController implements Initializable {
     @FXML
     private void startGame(ActionEvent event) throws IOException {
 
-//        String ip = ipInput.getText();
-//        String port = portInput.getText();
-//
-//        if (ip.isEmpty() || !validateIP(ip)) {
-//            ipWarn.setText("Invalid IP");
-//        } else if (port.isEmpty() || !validatePort(port)) {
-//            ipWarn.setText("");
-//            portWarn.setText("Invalid Port");
-//        } else {
-//            Stage primaryStage = (Stage) connectButton.getScene().getWindow();
-//            primaryStage.close();
-//            Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
-//
-//            Scene scene = new Scene(root);
-//            Stage stage = new Stage();
-//            stage.setScene(scene);
-//            stage.setTitle("Connect Four");
-//            stage.show();
-//        }
+        String ip = ipInput.getText();
+        String port = portInput.getText();
+
+        if (ip.isEmpty() || !validateIP(ip)) {
+            ipWarn.setText("Invalid IP");
+        } else if (port.isEmpty() || !validatePort(port)) {
+            ipWarn.setText("");
+            portWarn.setText("Invalid Port");
+        } else {
+            client = new C4Client(ip, Integer.parseInt(port));
+            client.requestServerConnection();
+
+            if (client.getConnectionStatus()) {
+                Stage primaryStage = (Stage) connectButton.getScene().getWindow();
+                primaryStage.close();
+                Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
+
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Connect Four");
+                stage.show();
+            } else {
+                // Print message saying Connection Fail
+            }
+
+        }
         Stage primaryStage = (Stage) connectButton.getScene().getWindow();
         primaryStage.close();
         Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
