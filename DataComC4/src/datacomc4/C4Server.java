@@ -93,11 +93,6 @@ public class C4Server {
                     board.insertToken(byteBuffer[1], (byte)1);
                     //AI player plays
                     byte tokenInput = player.play((byte)0);
-                    //Check for win 
-                    if(game.playerHasWon((byte)2)){
-                       //Send client server won - do not close socket yet if they want to play a new game
-                        out.write(new byte[]{1,tokenInput}, 0, receivedMessageSize);
-                    }
                     //Send client new move
                     out.write(new byte[]{1,tokenInput}, 0, receivedMessageSize);
                 } 
