@@ -21,65 +21,81 @@ public class C4Client {
     String IP;
     int portNumber;
 
-    private Player player;
+    private Player humanPlayer;
+    private Player AIPlayer;
     private Game game;
+    private Socket socket;
     private final byte[] packet = new byte[2];
     private boolean isConnected = false;
+
 
     public C4Client(String IP, int portNumber) {
         this.IP = IP;
         this.portNumber = portNumber;
 
         this.game = new Game((byte) 1);
-        this.player = new HumanPlayer(game);
+        this.humanPlayer = new HumanPlayer(game);
+        this.AIPlayer = new AIPlayer(game);
     }
 
     public void requestServerConnection() throws IOException {
         // Set packet to a [0,0] => Request a connection
         setPackage(packet, 0, 0);
-        Socket socket = new Socket();
+        socket = new Socket();
         // New socket Object, with timeout in 15s
         socket.connect(new InetSocketAddress(IP, portNumber), 15000);
+        
+        if (checkPackage( serverSender(socket, packet, portNumber, portNumber) ) == 0) {
+            isConnected = true;
+        }
+        else {
+            socket.close();
+        }
+    }
 
+    public byte[] serverListener(Socket socket) throws IOException {
         InputStream in = socket.getInputStream();
-        OutputStream out = socket.getOutputStream();
-        // Send the packet to server
-        out.write(packet);
-        boolean stilPlaying = true;
-
         int totalByteReceived = 0;
         int byteReceived;
-        while (stilPlaying) {
-            while (totalByteReceived < packet.length) {
-                if ((byteReceived = in.read(packet, totalByteReceived, packet.length - totalByteReceived)) == -1) {
-                    throw new SocketException("Server is toasted");
-                }
-                totalByteReceived += byteReceived;
+        while (totalByteReceived < packet.length) {
+            if ((byteReceived = in.read(packet, totalByteReceived, packet.length - totalByteReceived)) == -1) {
+                throw new SocketException("Server is toasted");
             }
-            if (checkPackage(packet, 0) && (int) packet[1] == 0) {
-                isConnected = true;
-                System.out.println("Connect Successful");
-            } else {
-                socket.close();
-                System.out.println("Connect FAIL");
-            }
+            totalByteReceived += byteReceived;
         }
+        return packet;
     }
 
-    public void sendMove(Socket socket, byte[] packet, int columnCoor) throws IOException {
-        if (isConnected) {
-            OutputStream out = socket.getOutputStream();
-            setPackage(packet, 1, columnCoor);
-            out.write(packet);
-        }
-    }
 
-    public byte[] convertSizeOfArray() {
-        return null;
+    public byte[] serverSender(Socket socket, byte[] packet, int offset, int value) throws IOException {
+        OutputStream out = socket.getOutputStream();
+        setPackage(packet, offset, value);
+        out.write(packet);
+        return serverListener(socket);
     }
 
     public boolean getConnectionStatus() {
-        return isConnected;
+        return this.isConnected;
+    }
+    
+    public Socket getSocket() {
+        return this.socket;
+    }
+    
+    public byte [] getPackage() {
+        return this.packet;
+    }
+    
+    public Player getHumanPlayer() {
+        return this.humanPlayer;
+    }
+    
+    public Player getAIPlayer() {
+        return this.AIPlayer;
+    }
+    
+    public Game getGame() {
+        return this.game;
     }
 
     private void setPackage(byte[] packet, int offset, int value) {
@@ -97,13 +113,18 @@ public class C4Client {
      * @param offset
      * @return
      */
-    private boolean checkPackage(byte[] packet, int offset) {
+    public int checkPackage(byte[] packet) {
         if (packet.length != 2) {
             throw new IllegalArgumentException("Wrong packet format");
         }
-        if ((int) packet[0] == offset) {
-            return true;
+        int firstByte = packet[0];
+        int secondByte = packet[1];
+
+        if (firstByte == 0 && secondByte == 0) {
+            return 0;
+        } else if (firstByte == 1) {
+            return secondByte;
         }
-        return false;
+        return -1;
     }
 }

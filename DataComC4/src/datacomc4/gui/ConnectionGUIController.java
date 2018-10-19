@@ -7,6 +7,7 @@ package datacomc4.gui;
 
 import datacomc4.C4Client;
 import java.io.IOException;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -82,9 +83,8 @@ public class ConnectionGUIController implements Initializable {
                 stage.setTitle("Connect Four");
                 stage.show();
             } else {
-                // Print message saying Connection Fail
+                // Set message saying Connection Fail
             }
-
         }
         Stage primaryStage = (Stage) connectButton.getScene().getWindow();
         primaryStage.close();
@@ -95,6 +95,10 @@ public class ConnectionGUIController implements Initializable {
         stage.setScene(scene);
         stage.setTitle("Connect Four");
         stage.show();
+    }
+    
+    public C4Client shareDataBetweenController() {
+        return this.client;
     }
 
     private boolean validateIP(String ip) {

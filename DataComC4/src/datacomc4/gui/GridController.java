@@ -5,11 +5,16 @@
  */
 package datacomc4.gui;
 
+import datacomc4.C4Client;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -47,6 +52,8 @@ public class GridController implements Initializable {
     private final String humanTurn = "Human";
     private final String aiTurn = "AI";
     private Circle lastHighlight = new Circle();
+    private C4Client client;
+    private byte[] serverPackage;
 
     /**
      * Initializes the controller class.
@@ -55,7 +62,18 @@ public class GridController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ROW = grid.getRowConstraints().size();
         COL = grid.getColumnConstraints().size();
-//        System.out.println("ROW is: " + ROW + " COL is " + COL);
+        // Try accessing to ConnectionGuiController to get the Socket Object
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("connectionGUI.fxml"));
+        try {
+            loader.load();
+        } catch (IOException error) {
+            System.out.println("There is an error while passing the Socket between controllers " + error);
+        }
+        ConnectionGUIController connection = loader.getController();
+        // Getting the Socket Object
+        client = connection.shareDataBetweenController();
+        // Add circle to GridPane
         addCircleToGrid();
     }
 
@@ -64,12 +82,7 @@ public class GridController implements Initializable {
             for (int colCount = 0; colCount < COL; colCount++) {
                 Circle circle = new Circle(32, Paint.valueOf("black"));
                 addHandlerForCircle(circle);
-//                circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//                    @Override
-//                    public void handle(MouseEvent e) {
-//                        onClickHandler(e);
-//                    }
-//                });
+
                 grid.add(circle, colCount, rowCount);
                 GridPane.setHgrow(circle, Priority.ALWAYS);
                 GridPane.setVgrow(circle, Priority.ALWAYS);
@@ -111,35 +124,34 @@ public class GridController implements Initializable {
         Circle source = (Circle) e.getSource();
         int selectColumnIndex = GridPane.getColumnIndex(source);
         checkCircle(selectColumnIndex);
+        client.getHumanPlayer().play((byte) selectColumnIndex);
+
+        // Check Win
+        try {
+            serverPackage = client.serverSender(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
+        } catch (IOException error) {
+            System.out.println("Connection error " + error);
+        }
+        int serverMove = client.checkPackage(serverPackage);
+        checkCircle(serverMove);
+        client.getAIPlayer().play((byte) serverMove);
+        // Check Win
     }
 
     private void checkCircle(int col) {
-        // For GridPane, Col start at 1
-        // (Row - 1 * Col) will give you the max row of correspondong Col
-//        col += 1;
         int lastRowIndex = col + ((ROW - 1) * COL);
-
-//        System.out.println("Column is: " + col + " AND last row is: " + lastRowIndex);
-//        System.out.println("Children size is: " + grid.getChildren().size());
-
         ObservableList<Node> childrens = grid.getChildren();
         Node firstRow = childrens.get(col);
         Node lastRow = childrens.get(lastRowIndex);
 
         if (isBlack(lastRow)) {
-//            System.out.println("Last Row");
             switchColor(lastRow);
         } else if (!isBlack(firstRow)) {
-//            System.out.println("First Row");
+
         } else {
-//            System.out.println("Loop");
             for (int i = lastRowIndex - COL; i >= 0; i -= COL) {
-//                System.out.println("Row is: " + i);
                 Node temp = childrens.get(i);
-//                System.out.println(temp);
                 if (isBlack(childrens.get(i))) {
-//                    System.out.println("SWITCH\n");
-//                    System.out.println("-------");
                     switchColor(temp);
                     break;
                 }
@@ -166,12 +178,7 @@ public class GridController implements Initializable {
      */
     private void switchColor(Node node) {
         Circle temp = (Circle) node;
-        /*
-        If isRed true, set the color of the circle to red.
-        Then set the color of "turn indicator" to blue.
-        "Turn Indicator" is a small circle outside the GridPane to indicate 
-        the color of whoever's turn is playing (red for player, blue for AI)
-         */
+
         if (isRed) {
             temp.setFill(Paint.valueOf("Red"));
             turnCircle.setFill(Paint.valueOf("Blue"));
