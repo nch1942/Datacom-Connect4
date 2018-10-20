@@ -45,15 +45,20 @@ public class GridController implements Initializable {
     private Label playerCounter;
     @FXML
     private Label aiCounter;
+    @FXML
+    private Label winDisplay;
 
     private int ROW = 0;
     private int COL = 0;
+    private int playerWinCounter = 0;
+    private int AIwinCounter = 0;
     private boolean isRed = true;
     private final String humanTurn = "Human";
     private final String aiTurn = "AI";
     private Circle lastHighlight = new Circle();
     private C4Client client;
     private byte[] serverPackage;
+
 
     /**
      * Initializes the controller class.
@@ -77,6 +82,10 @@ public class GridController implements Initializable {
         addCircleToGrid();
     }
 
+    /**
+     * Create circles with a radius of 32, paint it black and put them in
+     * GridPane
+     */
     private void addCircleToGrid() {
         for (int rowCount = 0; rowCount < ROW; rowCount++) {
             for (int colCount = 0; colCount < COL; colCount++) {
@@ -92,6 +101,12 @@ public class GridController implements Initializable {
         }
     }
 
+    /**
+     * Add 2 handlers to each circle. One for when Player Click on the circle,
+     * and One for when Player Hover on the circle
+     *
+     * @param circle
+     */
     private void addHandlerForCircle(Circle circle) {
         circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -125,19 +140,41 @@ public class GridController implements Initializable {
         int selectColumnIndex = GridPane.getColumnIndex(source);
         checkCircle(selectColumnIndex);
         client.getHumanPlayer().play((byte) selectColumnIndex);
+        // Check if player's move is a winning move
+        if (client.getHumanPlayer().getGame().playerHasWon((byte) 1)) {
+            playerWinCounter++;
+            playerCounter.setText((Integer.toString(playerWinCounter)));
+            winDisplay.setText("YOU WON THE MATCH. Click Reset to replay");
+            grid.setDisable(true);
 
-        // Check Win
+            // DO PLAYER WIN STUFF HERE
+        }
+        grid.setDisable(true);
+        // If the last player's move does not win the game, send the move to server.
         try {
             serverPackage = client.serverSender(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
         } catch (IOException error) {
             System.out.println("Connection error " + error);
         }
+        // Get the move from the server
         int serverMove = client.checkPackage(serverPackage);
         checkCircle(serverMove);
         client.getAIPlayer().play((byte) serverMove);
-        // Check Win
+        // Check if AI's move is a winning move
+        if (client.getAIPlayer().getGame().playerHasWon((byte) 1)) {
+            AIwinCounter++;
+            aiCounter.setText(Integer.toString(AIwinCounter));
+            winDisplay.setText("COMPUTER WON THE MATCH. Click Reset to replay");
+            grid.setDisable(true);
+        }
+        grid.setDisable(false);
     }
 
+    /**
+     * Look for the circle that WILL BE a legit move of the given column
+     *
+     * @param col
+     */
     private void checkCircle(int col) {
         int lastRowIndex = col + ((ROW - 1) * COL);
         ObservableList<Node> childrens = grid.getChildren();
@@ -161,7 +198,7 @@ public class GridController implements Initializable {
     }
 
     /**
-     * This method sound racist as hell...
+     * Check if a circle has the color black or not
      *
      * @param node
      * @return
@@ -172,7 +209,7 @@ public class GridController implements Initializable {
     }
 
     /**
-     * THIS NEED TO UPDATE
+     * Switch the color of the circle to either red or blue
      *
      * @param node
      */
@@ -190,11 +227,14 @@ public class GridController implements Initializable {
             turnDisplay.setText(humanTurn);
             isRed = true;
         }
-//        grid.setDisable(true);
     }
 
-
-
+    /**
+     * Look for the circle that WILL be POTENTIALLY the next move of the given
+     * column
+     *
+     * @param col
+     */
     private void checkPotentialCircle(int col) {
         int lastRowIndex = col + ((ROW - 1) * COL);
         Node temp = null;
@@ -222,6 +262,11 @@ public class GridController implements Initializable {
         }
     }
 
+    /**
+     * Highlight the circle that will be the next move of a column
+     *
+     * @param node
+     */
     private void highlightCircle(Node node) {
         Circle temp = (Circle) node;
 
