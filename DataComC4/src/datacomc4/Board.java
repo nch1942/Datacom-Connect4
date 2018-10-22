@@ -32,7 +32,7 @@ public class Board {
      */
     public void insertToken(byte column, byte token){
         boolean inserted = false;
-        for(int i = 0; i > 6; i++){
+        for(int i = 0; i <= 6; i++){
             if(board[i][column] == 0){
                 board[i][column] = token;
                 inserted = true;

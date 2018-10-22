@@ -53,6 +53,8 @@ public class C4Server {
         player = new AIPlayer(game);
     }
 
+    
+    
     private void serviceConnection() throws IOException {
         //Size of message received from client
         int receivedMessageSize = 2;

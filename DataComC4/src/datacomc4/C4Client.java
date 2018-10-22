@@ -54,9 +54,10 @@ public class C4Client {
         setPackage(packet, 0, 0);
         socket = new Socket();
         // New socket Object, with timeout in 15s
-        socket.connect(new InetSocketAddress(IP, portNumber), 15000);
+        socket.connect(new InetSocketAddress(IP, portNumber));
 
-        if (checkPackage(sendAndReceive(socket, packet, portNumber, portNumber)) == 0) {
+        if (checkPackage(sendAndReceive(socket, packet, 0, 0)) == 0) {
+            System.out.println("Connection succesful");
             isConnected = true;
         } else {
             socket.close();
@@ -103,7 +104,6 @@ public class C4Client {
         return serverListener(socket);
     }
 
-    public void serverSender
 
     public boolean getConnectionStatus() {
         return this.isConnected;
@@ -135,6 +135,7 @@ public class C4Client {
         }
         packet[0] = (byte) offset;
         packet[1] = (byte) value;
+;
     }
 
     /**

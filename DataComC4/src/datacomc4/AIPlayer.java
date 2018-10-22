@@ -86,7 +86,7 @@ public class AIPlayer implements Player {
                     return (byte) (column + 3);
                 }
             }
-            for (int column = 6; column > 0; column--) {
+            for (int column = 6; column > 3; column--) {
                 if (board[row][column] == 1 && board[row][column] == board[row][column - 1] && board[row][column - 1] == board[row][column - 2] && board[row][column - 3] == 0) {
                     return (byte) (column - 3);
                 }

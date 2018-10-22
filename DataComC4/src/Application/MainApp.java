@@ -11,20 +11,23 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import datacomc4.C4Server;
 
 /**
  *
  * @author C.Hoang
  */
-public class MainApp extends Application{
+public class MainApp extends Application {
 
     public static void main(String[] args) {       
         launch(args);
     }
+    
+    
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("../datacomc4/gui/connectionGUI.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../datacomc4/gui/connection.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Connect Four Server");

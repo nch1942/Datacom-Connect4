@@ -47,8 +47,8 @@ public class Game {
             }
         }
         // ascendingDiagonalCheck 
-        for (int i = 3; i < 7; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 3; j < 6; j++) {
                 if (this.board.getBoard()[j][i] == token && this.board.getBoard()[j - 1][i + 1] == token && this.board.getBoard()[j - 2][i + 2] == token && this.board.getBoard()[j - 3][i + 3] == token) {
                     return true;
                 }

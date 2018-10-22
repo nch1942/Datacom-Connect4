@@ -66,13 +66,19 @@ public class ConnectionController implements Initializable {
             ipWarn.setText("");
             portWarn.setText("Invalid Port");
         } else {
+            System.out.println("Port Number and IP are good");
             client = new C4Client(ip, Integer.parseInt(port));
+            System.out.println("Trying to connect");
             client.requestServerConnection();
 
             if (client.getConnectionStatus()) {
                 Stage primaryStage = (Stage) connectButton.getScene().getWindow();
                 primaryStage.close();
-                Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("grid.fxml"));
+                
+                Parent root = loader.load();
+                GridController game = loader.getController();
+                game.setConnection(client);
 
                 Scene scene = new Scene(root);
                 Stage stage = new Stage();
@@ -80,18 +86,18 @@ public class ConnectionController implements Initializable {
                 stage.setTitle("Connect Four");
                 stage.show();
             } else {
-                // Set message saying Connection Fail
+                System.out.println("Cannot Connect to Server");
             }
         }
-        Stage primaryStage = (Stage) connectButton.getScene().getWindow();
-        primaryStage.close();
-        Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
-
-        Scene scene = new Scene(root);
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.setTitle("Connect Four");
-        stage.show();
+//        Stage primaryStage = (Stage) connectButton.getScene().getWindow();
+//        primaryStage.close();
+//        Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
+//
+//        Scene scene = new Scene(root);
+//        Stage stage = new Stage();
+//        stage.setScene(scene);
+//        stage.setTitle("Connect Four");
+//        stage.show();
     }
     
     public C4Client getClient() {

@@ -409,4 +409,8 @@ public class GridController implements Initializable {
         // Getting the Socket Object
         return connection.getClient();
     }
+    
+    public void setConnection(C4Client client) {
+        this.client = client;
+    }
 }

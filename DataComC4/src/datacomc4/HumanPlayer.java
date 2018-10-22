@@ -31,6 +31,7 @@ public class HumanPlayer implements Player {
      */
     @Override
     public byte play(byte chosen) {
+        System.out.println("=======> " + chosen);
         game.getBoard().insertToken(chosen, (byte) 1);
         return chosen;
     }
