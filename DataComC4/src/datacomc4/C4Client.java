@@ -14,7 +14,8 @@ import java.net.SocketException;
 
 /**
  *
- * @author 1635547
+ * IMPORTANT NOTE: When seeing byte[X,Y]. E.g. byte[0,0], it means 1D array with
+ * the size 2, NOT 2D array!
  */
 public class C4Client {
 
@@ -38,21 +39,39 @@ public class C4Client {
         this.AIPlayer = new AIPlayer(game);
     }
 
+    /**
+     * Create a byte[0,0] and send to server for creating a new Socket Object.
+     *
+     * If server respond with a byte[0,0], then Connection is successful
+     *
+     * If server respond with something else, then Connection is not successful,
+     * and Socket will be closed.
+     *
+     * @throws IOException When there is a connection problem
+     */
     public void requestServerConnection() throws IOException {
         // Set packet to a [0,0] => Request a connection
         setPackage(packet, 0, 0);
         socket = new Socket();
         // New socket Object, with timeout in 15s
         socket.connect(new InetSocketAddress(IP, portNumber), 15000);
-        
-        if (checkPackage( serverSender(socket, packet, portNumber, portNumber) ) == 0) {
+
+        if (checkPackage(sendAndReceive(socket, packet, portNumber, portNumber)) == 0) {
             isConnected = true;
-        }
-        else {
+        } else {
             socket.close();
         }
     }
 
+    /**
+     * Listen to server respond. Usually called right after Client send
+     * something to server.
+     *
+     * @param socket The Socket Object that is used to carry out send and
+     * receive information.
+     * @return a byte[X,Y], which is the respond from the server
+     * @throws IOException When there is a problem receiving Server respond
+     */
     public byte[] serverListener(Socket socket) throws IOException {
         InputStream in = socket.getInputStream();
         int totalByteReceived = 0;
@@ -66,34 +85,46 @@ public class C4Client {
         return packet;
     }
 
-
-    public byte[] serverSender(Socket socket, byte[] packet, int offset, int value) throws IOException {
+    /**
+     * Prepare the Socket, the packet of byte[X,Y], the offset (X) and actual
+     * value (Y) for the packet
+     *
+     * @param socket the Socket object which will carry out the transmission
+     * @param packet the information which will be transmitted
+     * @param offset
+     * @param value
+     * @return
+     * @throws IOException
+     */
+    public byte[] sendAndReceive(Socket socket, byte[] packet, int offset, int value) throws IOException {
         OutputStream out = socket.getOutputStream();
         setPackage(packet, offset, value);
         out.write(packet);
         return serverListener(socket);
     }
 
+    public void serverSender
+
     public boolean getConnectionStatus() {
         return this.isConnected;
     }
-    
+
     public Socket getSocket() {
         return this.socket;
     }
-    
-    public byte [] getPackage() {
+
+    public byte[] getPackage() {
         return this.packet;
     }
-    
+
     public Player getHumanPlayer() {
         return this.humanPlayer;
     }
-    
+
     public Player getAIPlayer() {
         return this.AIPlayer;
     }
-    
+
     public Game getGame() {
         return this.game;
     }

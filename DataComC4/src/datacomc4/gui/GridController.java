@@ -214,7 +214,7 @@ public class GridController implements Initializable {
             // Disable the Grid so user cannot make move while waiting for AI to respond
             grid.setDisable(true);
             try {
-                serverPackage = client.serverSender(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
+                serverPackage = client.sendAndReceive(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
             } catch (IOException error) {
                 System.out.println("Connection error " + error);
             }
