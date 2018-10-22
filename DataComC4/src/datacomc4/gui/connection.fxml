@@ -7,7 +7,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="datacomc4.gui.ConnectionGUIController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="datacomc4.gui.ConnectionController">
     <children>
         <Button fx:id="connectButton" layoutX="219.0" layoutY="322.0" mnemonicParsing="false" onAction="#startGame" prefHeight="48.0" prefWidth="124.0" text="Connect">
          <font>

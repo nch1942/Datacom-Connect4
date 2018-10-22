@@ -7,7 +7,6 @@ package datacomc4.gui;
 
 import datacomc4.C4Client;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
@@ -22,14 +21,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-
-
 /**
  * FXML Controller class
  *
  * @author C.Hoang
  */
-public class ConnectionGUIController implements Initializable {
+public class ConnectionController implements Initializable {
 
     @FXML
     private Button connectButton;
@@ -97,7 +94,7 @@ public class ConnectionGUIController implements Initializable {
         stage.show();
     }
     
-    public C4Client shareDataBetweenController() {
+    public C4Client getClient() {
         return this.client;
     }
 

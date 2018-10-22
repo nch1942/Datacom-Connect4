@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,12 +20,14 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -47,9 +50,14 @@ public class GridController implements Initializable {
     private Label aiCounter;
     @FXML
     private Label winDisplay;
+    @FXML
+    private Button quitBtn;
+    @FXML
+    private Button resetBtn;
 
     private int ROW = 0;
     private int COL = 0;
+    private int moveCounter = 0;
     private int playerWinCounter = 0;
     private int AIwinCounter = 0;
     private boolean isRed = true;
@@ -60,6 +68,7 @@ public class GridController implements Initializable {
     private byte[] serverPackage;
 
 
+
     /**
      * Initializes the controller class.
      */
@@ -67,19 +76,12 @@ public class GridController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         ROW = grid.getRowConstraints().size();
         COL = grid.getColumnConstraints().size();
-        // Try accessing to ConnectionGuiController to get the Socket Object
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("connectionGUI.fxml"));
-        try {
-            loader.load();
-        } catch (IOException error) {
-            System.out.println("There is an error while passing the Socket between controllers " + error);
-        }
-        ConnectionGUIController connection = loader.getController();
-        // Getting the Socket Object
-        client = connection.shareDataBetweenController();
+        // Get the Client From ConnectionController
+        client = getClientFromConnectionController();
         // Add circle to GridPane
         addCircleToGrid();
+        addHandlerForQuitBtn();
+        addHandlerForResetBtn();
     }
 
     /**
@@ -123,50 +125,124 @@ public class GridController implements Initializable {
         });
     }
 
+    /**
+     * Add handler for Quit button, which will close the Socket, and exit the
+     * program.
+     */
+    private void addHandlerForQuitBtn() {
+        quitBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                try {
+                    onClickQuitBtn();
+                } catch (IOException error) {
+                    System.out.println("There is a problem when trying to close the socket " + error);
+                }
+            }
+        });
+    }
+
+    /**
+     * Add handler for Reset button, which will reset the Board, plus all the
+     * counters. But it keeps the Socket.
+     */
+    private void addHandlerForResetBtn() {
+        resetBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                onClickResetBtn();
+            }
+        });
+    }
+
+    /**
+     * Handler for MouseEnter Event, which will highlight a potential legal move
+     * for each column when user hover their mouse on that column
+     *
+     * @param e The event that is fired upon hovering the mouse
+     */
     private void onHoverHandler(MouseEvent e) {
         Circle source = (Circle) e.getSource();
 
         int selectRowIndex = GridPane.getRowIndex(source);
         int selectColumnIndex = GridPane.getColumnIndex(source);
+        // Increment both Column and Row by 1 to display for player correctly.
+        // Normally, we start at 1, not 0
         selectRowIndex++;
         selectColumnIndex++;
         coordinate.setText("ROW: " + selectRowIndex + " COL: " + selectColumnIndex);
+        // Reset Column back to correct order (Start counting at 0)
         selectColumnIndex--;
         checkPotentialCircle(selectColumnIndex);
     }
 
+    /**
+     * Handler for MouseClick Event, which will set the Circle at the legal move
+     * position at that column to either Red (Human Player) or Blue (AI Player).
+     * Then calls the necessary method to make that move registered in the Game
+     * logic, then check if the move is a winning move or not.
+     *
+     * IF the move is a winning move: Display appropriate message to Player,
+     * increase all the necessary counters. Disable the Grid, and ask if User
+     * want to Continue or Quit the Game.
+     *
+     * IF the move is NOT a winning move: Send the Player's move to Server, and listen to 
+     * Server respond
+     *
+     * @param e The event that is fired upon hovering the mouse
+     */
     private void onClickHandler(MouseEvent e) {
         Circle source = (Circle) e.getSource();
         int selectColumnIndex = GridPane.getColumnIndex(source);
+        // Display the move of Player on the Grid, and registered that move to the Game logic
         checkCircle(selectColumnIndex);
         client.getHumanPlayer().play((byte) selectColumnIndex);
         // Check if player's move is a winning move
         if (client.getHumanPlayer().getGame().playerHasWon((byte) 1)) {
             playerWinCounter++;
             playerCounter.setText((Integer.toString(playerWinCounter)));
-            winDisplay.setText("YOU WON THE MATCH. Click Reset to replay");
+            winDisplay.setText("YOU WON THE MATCH. Click Reset to replay, , or Quit to Close the Game");
+            // Disable the Grid so user Cannot continue after they won
             grid.setDisable(true);
+            // Exit the method
+            return;
+        }
+        // --------------------- \\
+        
+        // If the last move from Player is NOT a winning move, send the Player's move to server    
+        else {
+            // Disable the Grid so user cannot make move while waiting for AI to respond
+            grid.setDisable(true);
+            try {
+                serverPackage = client.serverSender(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
+            } catch (IOException error) {
+                System.out.println("Connection error " + error);
+            }
+        }
 
-            // DO PLAYER WIN STUFF HERE
-        }
-        grid.setDisable(true);
-        // If the last player's move does not win the game, send the move to server.
-        try {
-            serverPackage = client.serverSender(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
-        } catch (IOException error) {
-            System.out.println("Connection error " + error);
-        }
         // Get the move from the server
         int serverMove = client.checkPackage(serverPackage);
+        // Display the move of AI on the Grid, and registered that move to the Game logic
         checkCircle(serverMove);
         client.getAIPlayer().play((byte) serverMove);
         // Check if AI's move is a winning move
         if (client.getAIPlayer().getGame().playerHasWon((byte) 1)) {
             AIwinCounter++;
             aiCounter.setText(Integer.toString(AIwinCounter));
-            winDisplay.setText("COMPUTER WON THE MATCH. Click Reset to replay");
+            winDisplay.setText("COMPUTER WON THE MATCH. Click Reset to replay, or Quit to Close the Game");
             grid.setDisable(true);
+            // Exit the method
+            return;
         }
+        
+        // If 42 moves have been made, and noone win, then it's a draw
+        if (moveCounter == 42) {
+            winDisplay.setText("IT IS A DRAW. Click Reset to replay, or Quit to Close the Game");
+            grid.setDisable(true);
+            // Exit the method
+            return;
+        }
+        // Enable the Grid again so User can Play
         grid.setDisable(false);
     }
 
@@ -176,6 +252,7 @@ public class GridController implements Initializable {
      * @param col
      */
     private void checkCircle(int col) {
+        moveCounter++;
         int lastRowIndex = col + ((ROW - 1) * COL);
         ObservableList<Node> childrens = grid.getChildren();
         Node firstRow = childrens.get(col);
@@ -279,4 +356,57 @@ public class GridController implements Initializable {
         lastHighlight = temp;
     }
 
+    /**
+     * Handler for Quit button, which will close the socket, and quit the game.
+     */
+    private void onClickQuitBtn() throws IOException {
+        Stage stage = (Stage) quitBtn.getScene().getWindow();
+//        client.getSocket().close();
+        stage.close();
+    }
+
+    /**
+     * Handler for Reset button, which will reset the Grid, all counters and settings of the game.
+     */
+    private void onClickResetBtn() {
+        playerWinCounter = 0;
+        AIwinCounter = 0;
+        moveCounter = 0;
+        isRed = true;
+        turnCircle.setFill(Paint.valueOf("Red"));
+        turnDisplay.setText(humanTurn);
+        isRed = true;
+        playerCounter.setText("0");
+        aiCounter.setText("0");
+        resetGrid();
+    }
+
+    /**
+     * Set all Circle in the Grid back to Black
+     */
+    private void resetGrid() {
+        ObservableList<Node> childrens = grid.getChildren();
+        for (Node node : childrens) {
+            Circle temp = (Circle) node;
+            temp.setFill(Paint.valueOf("Black"));
+        }
+    }
+
+    /**
+     * Get the C4Client Object from ConnectionController, which will be used
+     * to access the Socket Object.
+     * @return 
+     */
+    private C4Client getClientFromConnectionController() {
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("connection.fxml"));
+        try {
+            loader.load();
+        } catch (IOException error) {
+            System.out.println("There is an error while passing the Socket between controllers " + error);
+        }
+        ConnectionController connection = loader.getController();
+        // Getting the Socket Object
+        return connection.getClient();
+    }
 }
