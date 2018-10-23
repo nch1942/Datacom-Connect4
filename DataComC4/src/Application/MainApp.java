@@ -19,11 +19,9 @@ import datacomc4.C4Server;
  */
 public class MainApp extends Application {
 
-    public static void main(String[] args) {       
+    public static void main(String[] args) {
         launch(args);
     }
-    
-    
 
     @Override
     public void start(Stage primaryStage) throws IOException {

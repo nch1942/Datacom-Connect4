@@ -150,7 +150,11 @@ public class GridController implements Initializable {
         resetBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                onClickResetBtn();
+                try {
+                    onClickResetBtn();
+                } catch (IOException error) {
+                    System.out.println("There is a problem wth connection to server " + error);
+                }
             }
         });
     }
@@ -186,8 +190,8 @@ public class GridController implements Initializable {
      * increase all the necessary counters. Disable the Grid, and ask if User
      * want to Continue or Quit the Game.
      *
-     * IF the move is NOT a winning move: Send the Player's move to Server, and listen to 
-     * Server respond
+     * IF the move is NOT a winning move: Send the Player's move to Server, and
+     * listen to Server respond
      *
      * @param e The event that is fired upon hovering the mouse
      */
@@ -201,14 +205,12 @@ public class GridController implements Initializable {
         if (client.getHumanPlayer().getGame().playerHasWon((byte) 1)) {
             playerWinCounter++;
             playerCounter.setText((Integer.toString(playerWinCounter)));
-            winDisplay.setText("YOU WON THE MATCH. Click Reset to replay, , or Quit to Close the Game");
+            winDisplay.setText("YOU WON THE MATCH.\nClick Reset to replay, , or Quit to Close the Game");
             // Disable the Grid so user Cannot continue after they won
             grid.setDisable(true);
             // Exit the method
             return;
-        }
-        // --------------------- \\
-        
+        } // --------------------- \\
         // If the last move from Player is NOT a winning move, send the Player's move to server    
         else {
             // Disable the Grid so user cannot make move while waiting for AI to respond
@@ -229,15 +231,15 @@ public class GridController implements Initializable {
         if (client.getAIPlayer().getGame().playerHasWon((byte) 1)) {
             AIwinCounter++;
             aiCounter.setText(Integer.toString(AIwinCounter));
-            winDisplay.setText("COMPUTER WON THE MATCH. Click Reset to replay, or Quit to Close the Game");
+            winDisplay.setText("COMPUTER WON THE MATCH.\nClick Reset to replay, or Quit to Close the Game");
             grid.setDisable(true);
             // Exit the method
             return;
         }
-        
+
         // If 42 moves have been made, and noone win, then it's a draw
         if (moveCounter == 42) {
-            winDisplay.setText("IT IS A DRAW. Click Reset to replay, or Quit to Close the Game");
+            winDisplay.setText("IT IS A DRAW.\nClick Reset to replay, or Quit to Close the Game");
             grid.setDisable(true);
             // Exit the method
             return;
@@ -361,14 +363,19 @@ public class GridController implements Initializable {
      */
     private void onClickQuitBtn() throws IOException {
         Stage stage = (Stage) quitBtn.getScene().getWindow();
-//        client.getSocket().close();
+        // Send a packet of byte[2,0] to indicate the Client is done playing, and going to quit the game
+        client.sendOnly(client.getSocket(), serverPackage, 2, 0);
+        client.getSocket().close();
         stage.close();
     }
 
     /**
-     * Handler for Reset button, which will reset the Grid, all counters and settings of the game.
+     * Handler for Reset button, which will reset the Grid, all counters and
+     * settings of the game.
      */
-    private void onClickResetBtn() {
+    private void onClickResetBtn() throws IOException {
+        // Send a packet of byte[3,0] to indicate the Client is done playing, and going to quit the game
+        client.sendOnly(client.getSocket(), serverPackage, 3, 0);
         playerWinCounter = 0;
         AIwinCounter = 0;
         moveCounter = 0;
@@ -379,6 +386,7 @@ public class GridController implements Initializable {
         playerCounter.setText("0");
         aiCounter.setText("0");
         resetGrid();
+        grid.setDisable(false);
     }
 
     /**
@@ -393,9 +401,10 @@ public class GridController implements Initializable {
     }
 
     /**
-     * Get the C4Client Object from ConnectionController, which will be used
-     * to access the Socket Object.
-     * @return 
+     * Get the C4Client Object from ConnectionController, which will be used to
+     * access the Socket Object.
+     *
+     * @return
      */
     private C4Client getClientFromConnectionController() {
         FXMLLoader loader = new FXMLLoader();
@@ -409,7 +418,7 @@ public class GridController implements Initializable {
         // Getting the Socket Object
         return connection.getClient();
     }
-    
+
     public void setConnection(C4Client client) {
         this.client = client;
     }

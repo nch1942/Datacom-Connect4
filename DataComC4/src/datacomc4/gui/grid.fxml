@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.7481927710843373" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="909.0" style="-fx-background-color: silver;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="datacomc4.gui.GridController">
+<SplitPane dividerPositions="0.6626240352811467" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="482.0" prefWidth="909.0" style="-fx-background-color: silver;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="datacomc4.gui.GridController">
   <items>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="481.0" prefWidth="620.0">
          <children>
@@ -54,9 +54,9 @@
             <Label layoutX="14.0" layoutY="228.0" prefHeight="25.0" prefWidth="62.0" text="AI wins:" />
             <Label fx:id="playerCounter" layoutX="88.0" layoutY="192.0" prefHeight="25.0" prefWidth="32.0" />
             <Label fx:id="aiCounter" layoutX="88.0" layoutY="228.0" prefHeight="25.0" prefWidth="32.0" />
-            <BorderPane layoutX="7.0" layoutY="99.0" prefHeight="84.0" prefWidth="213.0">
+            <BorderPane layoutX="7.0" layoutY="99.0" prefHeight="84.0" prefWidth="296.0">
                <center>
-                  <Label fx:id="winDisplay" prefHeight="70.0" prefWidth="218.0" textAlignment="CENTER" textFill="RED" textOverrun="CLIP" BorderPane.alignment="CENTER">
+                  <Label fx:id="winDisplay" alignment="TOP_LEFT" prefHeight="70.0" prefWidth="271.0" textAlignment="CENTER" textFill="RED" textOverrun="CLIP" BorderPane.alignment="CENTER">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>

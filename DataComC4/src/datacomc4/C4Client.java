@@ -90,6 +90,9 @@ public class C4Client {
      * Prepare the Socket, the packet of byte[X,Y], the offset (X) and actual
      * value (Y) for the packet
      *
+     * Right after sending the packet, call the serverListener method to listen
+     * to server's respond, and return the respond.
+     *
      * @param socket the Socket object which will carry out the transmission
      * @param packet the information which will be transmitted
      * @param offset
@@ -102,6 +105,22 @@ public class C4Client {
         setPackage(packet, offset, value);
         out.write(packet);
         return serverListener(socket);
+    }
+
+    /**
+     * Similar to sendAndReceive method, but this time, it will only send the
+     * packet, and NOT listening to server respond.
+     *
+     * @param socket
+     * @param packet
+     * @param offset
+     * @param value
+     * @throws IOException
+     */
+    public void sendOnly(Socket socket, byte[] packet, int offset, int value) throws IOException {
+        OutputStream out = socket.getOutputStream();
+        setPackage(packet, offset, value);
+        out.write(packet);
     }
 
 
@@ -135,7 +154,7 @@ public class C4Client {
         }
         packet[0] = (byte) offset;
         packet[1] = (byte) value;
-;
+        ;
     }
 
     /**
