@@ -224,11 +224,12 @@ public class GridController implements Initializable {
 
         // Get the move from the server
         int serverMove = client.checkPackage(serverPackage);
+        System.out.println(serverMove + "");
         // Display the move of AI on the Grid, and registered that move to the Game logic
         checkCircle(serverMove);
         client.getAIPlayer().play((byte) serverMove);
         // Check if AI's move is a winning move
-        if (client.getAIPlayer().getGame().playerHasWon((byte) 1)) {
+        if (client.getAIPlayer().getGame().playerHasWon((byte) 2)) {
             AIwinCounter++;
             aiCounter.setText(Integer.toString(AIwinCounter));
             winDisplay.setText("COMPUTER WON THE MATCH.\nClick Reset to replay, or Quit to Close the Game");
