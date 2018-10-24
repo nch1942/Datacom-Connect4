@@ -82,6 +82,7 @@ public class C4Server {
                 } //Client won - create new game
                 else if (byteBuffer[0] == (byte) 3) {
                     System.out.println("Client won - new game can start");
+                    countGames++;
                     session.createNewGame((byte) countGames);
                     game = session.getGame((byte) countGames);
                     beginSession();

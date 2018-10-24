@@ -45,15 +45,6 @@ public class Session {
      * @throws IllegalArgumentException if the game does not exist
      */
     public Game getGame(byte gameId){
-        Game game = null;
-        for(int i = 0; i < games.size(); i++){
-            if(games.get(i).getId() == gameId){
-                game = games.get(i);
-            }
-        }
-        if(game == null){
-            throw new IllegalArgumentException("Requested game does not exist!");
-        }
-        return game;
+        return games.get(games.size()-1);
     } 
 }
