@@ -49,7 +49,7 @@ public class AIPlayer implements Player {
                     return (byte) (column + 3);
                 }
             }
-            for (int column = 6; column > 0; column--) {
+            for (int column = 6; column > 3; column--) {
                 if (board[row][column] == 2 && board[row][column] == board[row][column - 1] && board[row][column - 1] == board[row][column - 2] && board[row][column - 3] == 0) {
                     return (byte) (column - 3);
                 }
@@ -131,7 +131,7 @@ public class AIPlayer implements Player {
         //Evaluate possibilites
         byte[] possibleMoves = new byte[7];
         for (int column = 0; column < 7; column++) {
-            for (int row = 5; row < 0; row--) {
+            for (int row = 5; row >= 0; row--) {
                 //Empty case
                 if (board[row][column] == 0) {
                     switch (column) {
@@ -140,7 +140,7 @@ public class AIPlayer implements Player {
                                 if (board[row][column + 1] == 2) {
                                     possibleMoves[column] += 2;
                                 }
-                                if (board[row + 1][column + 1] == 2) {
+                                if (board[row - 1][column + 1] == 2) {
                                     possibleMoves[column] += 2;
                                 }
                                 if (board[row][column + 1] == 1) {
@@ -157,17 +157,24 @@ public class AIPlayer implements Player {
                             break;
                         case 6:
                             if (row == 5) {
-                                if (board[row][column - 1] == 2 || board[row + 1][column - 1] == 2) {
+                                if (board[row][column - 1] == 2 || board[row - 1][column - 1] == 2) {
                                     possibleMoves[column] += 2;
                                 }
-                                if (board[row][column - 1] == 1 || board[row + 1][column - 1] == 1) {
+                                if (board[row][column - 1] == 1 || board[row - 1][column - 1] == 1) {
+                                    possibleMoves[column] += 1;
+                                }
+                            } else if (row == 0) {
+                                if (board[row][column - 1] == 2 || board[row][column] == 2) {
+                                    possibleMoves[column] += 2;
+                                }
+                                if (board[row][column - 1] == 1 || board[row][column] == 1) {
                                     possibleMoves[column] += 1;
                                 }
                             } else {
-                                if (board[row][column - 1] == 2 || board[row + 1][column - 1] == 2 || board[row + 1][column] == 2) {
+                                if (board[row][column - 1] == 2 || board[row - 1][column - 1] == 2 || board[row - 1][column] == 2) {
                                     possibleMoves[column] += 2;
-                                } 
-                                if (board[row][column - 1] == 1 || board[row + 1][column - 1] == 1 || board[row + 1][column] == 1) {
+                                }
+                                if (board[row][column - 1] == 1 || board[row - 1][column - 1] == 1 || board[row - 1][column] == 1) {
                                     possibleMoves[column] += 1;
                                 }
                             }
@@ -176,7 +183,7 @@ public class AIPlayer implements Player {
                             if (row == 5) {
                                 if (board[row][column - 1] == 2 || board[row][column + 1] == 2) {
                                     possibleMoves[column] += 2;
-                                } 
+                                }
                                 if (board[row][column - 1] == 2 || board[row][column + 1] == 2) {
                                     possibleMoves[column] += 2;
                                 }
