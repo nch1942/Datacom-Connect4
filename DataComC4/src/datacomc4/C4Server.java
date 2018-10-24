@@ -61,6 +61,7 @@ public class C4Server {
         byte[] byteBuffer = new byte[BUFSIZE];
         //Run loop forever accepting and serving connections
         for (;;) {
+            System.out.println("h");
             clientSocket = serverSocket.accept();
             in = clientSocket.getInputStream();     //To read data from socket
             out = clientSocket.getOutputStream();   //To write data to socket
@@ -78,7 +79,7 @@ public class C4Server {
                 } //Client wants to stop (2)
                 else if (byteBuffer[0] == (byte) 2) {
                     System.out.println("Thank you for playing");
-                    clientSocket.close();
+                    continue;
                 } //Client won - create new game
                 else if (byteBuffer[0] == (byte) 3) {
                     System.out.println("Client won - new game can start");
