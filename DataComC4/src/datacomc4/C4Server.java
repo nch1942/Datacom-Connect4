@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,7 +29,7 @@ public class C4Server {
     private int countGames;
 
     public C4Server(int serverPort) throws IOException {
-        //Set seerver port we want t listen to
+        //Set seerver port we want to listen to
         this.serverPort = serverPort;
         //Create server socket
         acceptClientRequest();
@@ -83,12 +82,16 @@ public class C4Server {
                 } //Client won - create new game
                 else if (byteBuffer[0] == (byte) 3) {
                     System.out.println("Client won - new game can start");
+                    session.createNewGame((byte) countGames);
+                    game = session.getGame((byte) countGames);
                     beginSession();
                 } //Client wants to make a move
                 else if (byteBuffer[0] == (byte) 1) {
                     board = game.getBoard();
-                    System.out.println("at row and col 0 = " + game.getBoard().getBoard()[0][0]);
-                    System.out.println("at row  5 and col 0 = " + game.getBoard().getBoard()[5][0]);
+                    
+//                    System.out.println("at row and col 0 = " + game.getBoard().getBoard()[0][0]);
+//                    System.out.println("at row  5 and col 0 = " + game.getBoard().getBoard()[5][0]);
+                    
                     //insert new client token
                     board.insertToken(byteBuffer[1], (byte) 1);
                     //AI player plays

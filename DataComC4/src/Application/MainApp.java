@@ -5,13 +5,13 @@
  */
 package Application;
 
+import datacomc4.C4Server;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import datacomc4.C4Server;
 
 /**
  *
@@ -19,7 +19,8 @@ import datacomc4.C4Server;
  */
 public class MainApp extends Application {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+//        C4Server server = new C4Server(50000);
         launch(args);
     }
 

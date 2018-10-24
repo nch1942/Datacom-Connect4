@@ -6,6 +6,7 @@
 package datacomc4.gui;
 
 import datacomc4.C4Client;
+import datacomc4.Game;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -387,7 +388,9 @@ public class GridController implements Initializable {
         playerCounter.setText("0");
         aiCounter.setText("0");
         resetGrid();
+        client.restartClient();
         grid.setDisable(false);
+        
     }
 
     /**

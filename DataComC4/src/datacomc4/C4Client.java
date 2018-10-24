@@ -147,14 +147,26 @@ public class C4Client {
     public Game getGame() {
         return this.game;
     }
+    
+    public void restartClient() {
+        System.out.println("Game Restarted");
+        this.game = new Game((byte) 1);
+        this.humanPlayer = new HumanPlayer(game);
+        this.AIPlayer = new AIPlayer(game);
+    }
 
+    /**
+     * Set the offset and actual value for Packet
+     * @param packet
+     * @param offset
+     * @param value 
+     */
     private void setPackage(byte[] packet, int offset, int value) {
         if (packet.length != 2) {
             throw new IllegalArgumentException("Packet Size Should be 2");
         }
         packet[0] = (byte) offset;
         packet[1] = (byte) value;
-        ;
     }
 
     /**
