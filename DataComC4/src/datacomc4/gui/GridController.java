@@ -228,7 +228,7 @@ public class GridController implements Initializable {
         System.out.println(serverMove + "");
         // Display the move of AI on the Grid, and registered that move to the Game logic
         checkCircle(serverMove);
-        client.getAIPlayer().play((byte) serverMove);
+        client.getGame().getBoard().insertToken((byte) serverMove, (byte)2);
         // Check if AI's move is a winning move
         if (client.getAIPlayer().getGame().playerHasWon((byte) 2)) {
             AIwinCounter++;

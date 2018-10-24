@@ -20,8 +20,8 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
 
     public static void main(String[] args) throws IOException {
-//        C4Server server = new C4Server(50000);
-        launch(args);
+       C4Server server = new C4Server(50000);
+        //launch(args);
     }
 
     @Override
