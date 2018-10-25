@@ -8,7 +8,7 @@ package datacomc4;
 /**
  * Human player class implements Player - overrides the play method
  *
- * @author 1635547
+ * @author Gabriela Rueda
  */
 public class HumanPlayer implements Player {
 

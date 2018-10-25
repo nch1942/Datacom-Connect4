@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package datacomc4;
 
 import java.io.IOException;
@@ -16,6 +12,8 @@ import java.net.SocketException;
  *
  * IMPORTANT NOTE: When seeing byte[X,Y]. E.g. byte[0,0], it means 1D array with
  * the size 2, NOT 2D array!
+ * 
+ * @author Cao Hoang Nguyen
  */
 public class C4Client {
 
@@ -57,7 +55,7 @@ public class C4Client {
         socket.connect(new InetSocketAddress(IP, portNumber));
 
         if (checkPackage(sendAndReceive(socket, packet, 0, 0)) == 0) {
-            System.out.println("Connection succesful");
+            System.out.println("Sucessfully connected to server\n");
             isConnected = true;
         } else {
             socket.close();
@@ -79,7 +77,7 @@ public class C4Client {
         int byteReceived;
         while (totalByteReceived < packet.length) {
             if ((byteReceived = in.read(packet, totalByteReceived, packet.length - totalByteReceived)) == -1) {
-                throw new SocketException("Server is toasted");
+                throw new SocketException("Server is toasted. Please try again later\n");
             }
             totalByteReceived += byteReceived;
         }
@@ -147,9 +145,8 @@ public class C4Client {
     public Game getGame() {
         return this.game;
     }
-    
+
     public void restartClient() {
-        System.out.println("Game Restarted");
         this.game = new Game((byte) 1);
         this.humanPlayer = new HumanPlayer(game);
         this.AIPlayer = new AIPlayer(game);
@@ -157,13 +154,14 @@ public class C4Client {
 
     /**
      * Set the offset and actual value for Packet
+     *
      * @param packet
      * @param offset
-     * @param value 
+     * @param value
      */
     private void setPackage(byte[] packet, int offset, int value) {
         if (packet.length != 2) {
-            throw new IllegalArgumentException("Packet Size Should be 2");
+            throw new IllegalArgumentException("Wrong Packet size. Packet Size Should be 2\n");
         }
         packet[0] = (byte) offset;
         packet[1] = (byte) value;
@@ -172,17 +170,23 @@ public class C4Client {
     /**
      * Check if a package is for requesting connection, make move, or quit 1 i
      *
-     * @param packet
-     * @param offset
-     * @return
+     * @param packet the byte[] that need to check
+     * @return -1 if there is error. 0 If first byte is 0. A number between 0-6 if
+     * first byte is 1
      */
     public int checkPackage(byte[] packet) {
         if (packet.length != 2) {
-            throw new IllegalArgumentException("Wrong packet format");
+            throw new IllegalArgumentException("Wrong Packet size. Packet Size Should be 2\n");
         }
         int firstByte = packet[0];
         int secondByte = packet[1];
 
+        if (firstByte > 127 || firstByte < 0) {
+            return -1;
+        }
+        if (secondByte > 127 || secondByte < 0) {
+            return -1;
+        }
         if (firstByte == 0 && secondByte == 0) {
             return 0;
         } else if (firstByte == 1) {

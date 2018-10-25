@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package datacomc4.gui;
-
 import datacomc4.C4Client;
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +23,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author C.Hoang
+ * @author Cao Hoang Nguyen
  */
 public class ConnectionController implements Initializable {
 
@@ -51,9 +50,18 @@ public class ConnectionController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        portInput.setText("50000");
     }
 
+    /**
+     * Display a form for user to enter IP number and Port number.
+     * Validate user input. If the input is valid and server is running,
+     * this method will setup the connection Socket and display the main GUI
+     * for user to play.
+     * 
+     * @param event The event that fired the handler
+     * @throws IOException 
+     */
     @FXML
     private void startGame(ActionEvent event) throws IOException {
 
@@ -68,7 +76,7 @@ public class ConnectionController implements Initializable {
         } else {
             System.out.println("Port Number and IP are good");
             client = new C4Client(ip, Integer.parseInt(port));
-            System.out.println("Trying to connect");
+            System.out.println("Connecting to server...Stand by\n");
             client.requestServerConnection();
 
             if (client.getConnectionStatus()) {
@@ -86,18 +94,9 @@ public class ConnectionController implements Initializable {
                 stage.setTitle("Connect Four");
                 stage.show();
             } else {
-                System.out.println("Cannot Connect to Server");
+                System.out.println("Cannot Connect to Server. Please try again later\n");
             }
         }
-//        Stage primaryStage = (Stage) connectButton.getScene().getWindow();
-//        primaryStage.close();
-//        Parent root = FXMLLoader.load(getClass().getResource("grid.fxml"));
-//
-//        Scene scene = new Scene(root);
-//        Stage stage = new Stage();
-//        stage.setScene(scene);
-//        stage.setTitle("Connect Four");
-//        stage.show();
     }
     
     public C4Client getClient() {
@@ -113,7 +112,7 @@ public class ConnectionController implements Initializable {
         try {
             temp = Integer.parseInt(port);
         } catch (Exception e) {
-            System.out.println("Error: " + e);
+            System.out.println("Error when trying to process the Port number: " + e + "\n");
             return false;
         }
         return temp >= 0 && temp <= 65535;

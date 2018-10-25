@@ -6,12 +6,9 @@
 package datacomc4.gui;
 
 import datacomc4.C4Client;
-import datacomc4.Game;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -33,7 +30,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Crusader2142
+ * @author Cao Hoang Nguyen
  */
 public class GridController implements Initializable {
 
@@ -111,18 +108,12 @@ public class GridController implements Initializable {
      * @param circle
      */
     private void addHandlerForCircle(Circle circle) {
-        circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                onClickHandler(e);
-            }
+        circle.setOnMouseClicked((MouseEvent e) -> {
+            onClickHandler(e);
         });
 
-        circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                onHoverHandler(e);
-            }
+        circle.setOnMouseEntered((MouseEvent e) -> {
+            onHoverHandler(e);
         });
     }
 
@@ -131,14 +122,11 @@ public class GridController implements Initializable {
      * program.
      */
     private void addHandlerForQuitBtn() {
-        quitBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                try {
-                    onClickQuitBtn();
-                } catch (IOException error) {
-                    System.out.println("There is a problem when trying to close the socket " + error);
-                }
+        quitBtn.setOnAction((ActionEvent e) -> {
+            try {
+                onClickQuitBtn();
+            } catch (IOException error) {
+                System.out.println("There is a problem when trying to close the socket: " + error + "\n");
             }
         });
     }
@@ -154,7 +142,7 @@ public class GridController implements Initializable {
                 try {
                     onClickResetBtn();
                 } catch (IOException error) {
-                    System.out.println("There is a problem wth connection to server " + error);
+                    System.out.println("There is a problem why tring to reset the Game: " + error + "\n");
                 }
             }
         });
@@ -171,11 +159,13 @@ public class GridController implements Initializable {
 
         int selectRowIndex = GridPane.getRowIndex(source);
         int selectColumnIndex = GridPane.getColumnIndex(source);
+        
         // Increment both Column and Row by 1 to display for player correctly.
         // Normally, we start at 1, not 0
         selectRowIndex++;
         selectColumnIndex++;
         coordinate.setText("ROW: " + selectRowIndex + " COL: " + selectColumnIndex);
+        
         // Reset Column back to correct order (Start counting at 0)
         selectColumnIndex--;
         checkPotentialCircle(selectColumnIndex);
@@ -202,16 +192,19 @@ public class GridController implements Initializable {
         // Display the move of Player on the Grid, and registered that move to the Game logic
         checkCircle(selectColumnIndex);
         client.getHumanPlayer().play((byte) selectColumnIndex);
-        // Check if player's move is a winning move
+        // Check if player's move is a winning move. 1 mean player
         if (client.getHumanPlayer().getGame().playerHasWon((byte) 1)) {
             playerWinCounter++;
             playerCounter.setText((Integer.toString(playerWinCounter)));
-            winDisplay.setText("YOU WON THE MATCH.\nClick Reset to replay, , or Quit to Close the Game");
+            winDisplay.setText("YOU WON THE MATCH.\nClick Reset to replay, , or Quit to Close the Game\n");
             // Disable the Grid so user Cannot continue after they won
             grid.setDisable(true);
             // Exit the method
             return;
-        } // --------------------- \\
+        }
+        
+// --------------------- \\
+        
         // If the last move from Player is NOT a winning move, send the Player's move to server    
         else {
             // Disable the Grid so user cannot make move while waiting for AI to respond
@@ -219,18 +212,17 @@ public class GridController implements Initializable {
             try {
                 serverPackage = client.sendAndReceive(client.getSocket(), client.getPackage(), 1, selectColumnIndex);
             } catch (IOException error) {
-                System.out.println("Connection error " + error);
+                System.out.println("There is an error while trying to send the Client move to server: " + error + "\n");
             }
         }
 
         // Get the move from the server
         int serverMove = client.checkPackage(serverPackage);
-        System.out.println(serverMove + "");
         // Display the move of AI on the Grid, and registered that move to the Game logic
         checkCircle(serverMove);
         client.getGame().getBoard().insertToken((byte) serverMove, (byte)2);
-        // Check if AI's move is a winning move
-        if (client.getAIPlayer().getGame().playerHasWon((byte) 2)) {
+        // Check if AI's move is a winning move. 2 mean AI
+        if (client.getHumanPlayer().getGame().playerHasWon((byte) 2)) {
             AIwinCounter++;
             aiCounter.setText(Integer.toString(AIwinCounter));
             winDisplay.setText("COMPUTER WON THE MATCH.\nClick Reset to replay, or Quit to Close the Game");
@@ -369,6 +361,7 @@ public class GridController implements Initializable {
         client.sendOnly(client.getSocket(), serverPackage, 2, 0);
         client.getSocket().close();
         stage.close();
+        System.out.println("Client has quit the Game. Socket is closed\n");
     }
 
     /**
@@ -378,19 +371,18 @@ public class GridController implements Initializable {
     private void onClickResetBtn() throws IOException {
         // Send a packet of byte[3,0] to indicate the Client is done playing, and going to quit the game
         client.sendOnly(client.getSocket(), serverPackage, 3, 0);
-        playerWinCounter = 0;
-        AIwinCounter = 0;
         moveCounter = 0;
         isRed = true;
         turnCircle.setFill(Paint.valueOf("Red"));
         turnDisplay.setText(humanTurn);
-        isRed = true;
-        playerCounter.setText("0");
-        aiCounter.setText("0");
+        winDisplay.setText("");
+        // Set all the circle in the Grid's color back to black
         resetGrid();
+       
         client.restartClient();
+        // Re-enable the Grid
         grid.setDisable(false);
-        
+        System.out.println("Client has restarted...Initialize new Game\n");
     }
 
     /**
@@ -416,7 +408,7 @@ public class GridController implements Initializable {
         try {
             loader.load();
         } catch (IOException error) {
-            System.out.println("There is an error while passing the Socket between controllers " + error);
+            System.out.println("There is an error while passing the Socket between controllers: " + error);
         }
         ConnectionController connection = loader.getController();
         // Getting the Socket Object

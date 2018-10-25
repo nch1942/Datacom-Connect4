@@ -7,7 +7,7 @@ package datacomc4;
 
 /**
  *
- * @author 1635547
+ * @author Gabriela Rueda
  */
 public interface Player {
 

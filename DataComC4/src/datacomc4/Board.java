@@ -2,7 +2,7 @@ package datacomc4;
 
 /**
  *
- * @author 1636522
+ * @author Benjamin Kearney
  */
 public class Board {
 

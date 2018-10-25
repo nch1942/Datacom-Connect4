@@ -7,7 +7,7 @@ package datacomc4;
 
 /**
  *
- * @author 1635547
+ * @author Gabriela Rueda
  */
 public class AIPlayer implements Player {
 
@@ -24,7 +24,7 @@ public class AIPlayer implements Player {
     }
 
     /**
-     *
+     *  Make the AI place a valid move
      * @param chosen
      */
     @Override
