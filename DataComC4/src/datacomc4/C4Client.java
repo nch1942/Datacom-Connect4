@@ -21,7 +21,6 @@ public class C4Client {
     int portNumber;
 
     private Player humanPlayer;
-    private Player AIPlayer;
     private Game game;
     private Socket socket;
     private final byte[] packet = new byte[2];
@@ -34,7 +33,6 @@ public class C4Client {
 
         this.game = new Game((byte) 1);
         this.humanPlayer = new HumanPlayer(game);
-        this.AIPlayer = new AIPlayer(game);
     }
 
     /**
@@ -138,10 +136,6 @@ public class C4Client {
         return this.humanPlayer;
     }
 
-    public Player getAIPlayer() {
-        return this.AIPlayer;
-    }
-
     public Game getGame() {
         return this.game;
     }
@@ -149,7 +143,6 @@ public class C4Client {
     public void restartClient() {
         this.game = new Game((byte) 1);
         this.humanPlayer = new HumanPlayer(game);
-        this.AIPlayer = new AIPlayer(game);
     }
 
     /**
