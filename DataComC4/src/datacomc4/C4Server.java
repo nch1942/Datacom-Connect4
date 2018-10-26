@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package datacomc4;
 
 import java.io.IOException;
@@ -12,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
+ * C4Client houses the main logic for the Server side, including instantiate
+ * necessary Objects for the Game to work. E.g. Player, Game and Socket, Session
  *
  * @author Gabriela Rueda
  */
@@ -38,7 +35,8 @@ public class C4Server {
 
     /**
      * Open a new Socket for Client connection
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     private void acceptClientRequest() throws IOException {
         //Create socket to be able to accept client's connection request
@@ -57,10 +55,11 @@ public class C4Server {
         game = session.getGame((byte) 0);
         player = new AIPlayer(game);
     }
-    
+
     /**
      * Send And Receive Packet from Client
-     * @throws IOException 
+     *
+     * @throws IOException
      */
     private void serviceConnection() throws IOException {
         //Size of message received from client
@@ -106,7 +105,7 @@ public class C4Server {
                         out.write(new byte[]{1, tokenInput}, 0, receivedMessageSize);
                     }
                 }
-              // If Client Crash for some reason, Print out message, but Server will keep running
+                // If Client Crash for some reason, Print out message, but Server will keep running
             } catch (IOException e) {
                 System.out.println("=========  WARNING  ========= \n");
                 System.out.println("IT SEEMS CLIENT HAS CRASHED. SERVER STILL RUNNING\n");

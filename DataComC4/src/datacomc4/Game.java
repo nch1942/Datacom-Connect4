@@ -1,6 +1,8 @@
 package datacomc4;
 
 /**
+ * Game houses the logic of win, lose and draw condition of the Connect Four
+ * game
  *
  * @author Benjamin Kearney
  */
@@ -8,6 +10,7 @@ public class Game {
 
     private Board board;
     private byte id;
+    private int moveCounter = 0;
 
     public Game(byte id) {
         this.id = id;
@@ -22,6 +25,14 @@ public class Game {
         return id;
     }
 
+    public boolean isDraw() {
+        if (moveCounter == 42) {
+            moveCounter = 0;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * checks if the player with the designated token has won
      *
@@ -29,6 +40,7 @@ public class Game {
      * @return boolean
      */
     public boolean playerHasWon(byte token) {
+        moveCounter++;
 
         // horizontalCheck
         for (int j = 0; j < 3; j++) {

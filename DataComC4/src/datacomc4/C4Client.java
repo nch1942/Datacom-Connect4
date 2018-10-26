@@ -1,4 +1,3 @@
-
 package datacomc4;
 
 import java.io.IOException;
@@ -12,7 +11,10 @@ import java.net.SocketException;
  *
  * IMPORTANT NOTE: When seeing byte[X,Y]. E.g. byte[0,0], it means 1D array with
  * the size 2, NOT 2D array!
- * 
+ *
+ * C4Client houses the main logic for the Client side, including instantiate
+ * necessary Objects for the Game to work. E.g. Player, Game and Socket.
+ *
  * @author Cao Hoang Nguyen
  */
 public class C4Client {
@@ -164,8 +166,8 @@ public class C4Client {
      * Check if a package is for requesting connection, make move, or quit 1 i
      *
      * @param packet the byte[] that need to check
-     * @return -1 if there is error. 0 If first byte is 0. A number between 0-6 if
-     * first byte is 1
+     * @return -1 if there is error. 0 If first byte is 0. A number between 0-6
+     * if first byte is 1
      */
     public int checkPackage(byte[] packet) {
         if (packet.length != 2) {

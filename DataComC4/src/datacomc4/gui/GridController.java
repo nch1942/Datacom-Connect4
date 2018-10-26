@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package datacomc4.gui;
 
 import datacomc4.C4Client;
@@ -28,7 +23,9 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class. Responsible for building the GUI where user can
+ * interact with the Board, make their move, and display other necessary
+ * information for user to keep track of the Game
  *
  * @author Cao Hoang Nguyen
  */
@@ -55,7 +52,6 @@ public class GridController implements Initializable {
 
     private int ROW = 0;
     private int COL = 0;
-    private int moveCounter = 0;
     private int playerWinCounter = 0;
     private int AIwinCounter = 0;
     private boolean isRed = true;
@@ -159,13 +155,13 @@ public class GridController implements Initializable {
 
         int selectRowIndex = GridPane.getRowIndex(source);
         int selectColumnIndex = GridPane.getColumnIndex(source);
-        
+
         // Increment both Column and Row by 1 to display for player correctly.
         // Normally, we start at 1, not 0
         selectRowIndex++;
         selectColumnIndex++;
         coordinate.setText("ROW: " + selectRowIndex + " COL: " + selectColumnIndex);
-        
+
         // Reset Column back to correct order (Start counting at 0)
         selectColumnIndex--;
         checkPotentialCircle(selectColumnIndex);
@@ -201,10 +197,7 @@ public class GridController implements Initializable {
             grid.setDisable(true);
             // Exit the method
             return;
-        }
-        
-// --------------------- \\
-        
+        } // --------------------- \\
         // If the last move from Player is NOT a winning move, send the Player's move to server    
         else {
             // Disable the Grid so user cannot make move while waiting for AI to respond
@@ -220,7 +213,7 @@ public class GridController implements Initializable {
         int serverMove = client.checkPackage(serverPackage);
         // Display the move of AI on the Grid, and registered that move to the Game logic
         checkCircle(serverMove);
-        client.getGame().getBoard().insertToken((byte) serverMove, (byte)2);
+        client.getGame().getBoard().insertToken((byte) serverMove, (byte) 2);
         // Check if AI's move is a winning move. 2 mean AI
         if (client.getHumanPlayer().getGame().playerHasWon((byte) 2)) {
             AIwinCounter++;
@@ -232,7 +225,7 @@ public class GridController implements Initializable {
         }
 
         // If 42 moves have been made, and noone win, then it's a draw
-        if (moveCounter == 42) {
+        if (client.getGame().isDraw()) {
             winDisplay.setText("IT IS A DRAW.\nClick Reset to replay, or Quit to Close the Game");
             grid.setDisable(true);
             // Exit the method
@@ -248,7 +241,6 @@ public class GridController implements Initializable {
      * @param col
      */
     private void checkCircle(int col) {
-        moveCounter++;
         int lastRowIndex = col + ((ROW - 1) * COL);
         ObservableList<Node> childrens = grid.getChildren();
         Node firstRow = childrens.get(col);
@@ -371,14 +363,13 @@ public class GridController implements Initializable {
     private void onClickResetBtn() throws IOException {
         // Send a packet of byte[3,0] to indicate the Client is done playing, and going to quit the game
         client.sendOnly(client.getSocket(), serverPackage, 3, 0);
-        moveCounter = 0;
         isRed = true;
         turnCircle.setFill(Paint.valueOf("Red"));
         turnDisplay.setText(humanTurn);
         winDisplay.setText("");
         // Set all the circle in the Grid's color back to black
         resetGrid();
-       
+
         client.restartClient();
         // Re-enable the Grid
         grid.setDisable(false);
@@ -415,6 +406,11 @@ public class GridController implements Initializable {
         return connection.getClient();
     }
 
+    /**
+     * Set the Client and pass it between Controller
+     *
+     * @param client
+     */
     public void setConnection(C4Client client) {
         this.client = client;
     }

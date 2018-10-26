@@ -1,9 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package datacomc4.gui;
+
 import datacomc4.C4Client;
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 /**
- * FXML Controller class
+ * FXML Controller class. Responsible for building the GUI where user can enter
+ * IP address and Port number to connect the server. Establish C4Client Object
  *
  * @author Cao Hoang Nguyen
  */
@@ -43,8 +40,6 @@ public class ConnectionController implements Initializable {
     private static final Pattern PATTERN = Pattern.compile(
             "^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
-
-
     /**
      * Initializes the controller class.
      */
@@ -54,13 +49,12 @@ public class ConnectionController implements Initializable {
     }
 
     /**
-     * Display a form for user to enter IP number and Port number.
-     * Validate user input. If the input is valid and server is running,
-     * this method will setup the connection Socket and display the main GUI
-     * for user to play.
-     * 
+     * Display a form for user to enter IP number and Port number. Validate user
+     * input. If the input is valid and server is running, this method will
+     * setup the connection Socket and display the main GUI for user to play.
+     *
      * @param event The event that fired the handler
-     * @throws IOException 
+     * @throws IOException
      */
     @FXML
     private void startGame(ActionEvent event) throws IOException {
@@ -83,7 +77,7 @@ public class ConnectionController implements Initializable {
                 Stage primaryStage = (Stage) connectButton.getScene().getWindow();
                 primaryStage.close();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("grid.fxml"));
-                
+
                 Parent root = loader.load();
                 GridController game = loader.getController();
                 game.setConnection(client);
@@ -98,7 +92,7 @@ public class ConnectionController implements Initializable {
             }
         }
     }
-    
+
     public C4Client getClient() {
         return this.client;
     }

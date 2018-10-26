@@ -1,11 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package datacomc4;
 
 /**
+ * AIPlayer houses the AI logic, which is an algorithm to decide what is the
+ * best possible move to either block HumanPlayer from winning, or make itself
+ * the winner.
  *
  * @author Gabriela Rueda
  */
@@ -24,7 +22,8 @@ public class AIPlayer implements Player {
     }
 
     /**
-     *  Make the AI place a valid move
+     * Make the AI place a valid move
+     *
      * @param chosen
      */
     @Override

@@ -1,6 +1,8 @@
 package datacomc4;
 
 /**
+ * The Board represents the board in a Connect Four Game. Since the board
+ * contains Row and Column, we use a 2D byte[] to represent the board
  *
  * @author Benjamin Kearney
  */
@@ -18,6 +20,11 @@ public class Board {
         }
     }
 
+    /**
+     * Return the board of the current Game
+     *
+     * @return
+     */
     public byte[][] getBoard() {
         return board;
     }
