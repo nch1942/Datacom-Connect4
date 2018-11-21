@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * C4Client houses the main logic for the Server side, including instantiate
@@ -12,7 +14,7 @@ import java.net.Socket;
  *
  * @author Gabriela Rueda
  */
-public class C4Server {
+public class C4Server implements Runnable {
 
     private Session session;
     private Player player;
@@ -28,9 +30,9 @@ public class C4Server {
     public C4Server(int serverPort) throws IOException {
         //Set seerver port we want to listen to
         this.serverPort = serverPort;
+        System.out.println("suppp");
         //Create server socket
         acceptClientRequest();
-
     }
 
     /**
@@ -62,21 +64,36 @@ public class C4Server {
      * @throws IOException
      */
     private void serviceConnection() throws IOException {
-        //Size of message received from client
-        int receivedMessageSize = 2;
-        //byte array buffer
-        byte[] byteBuffer = new byte[BUFSIZE];
         //Run loop forever accepting and serving connections
         for (;;) {
             System.out.println("Server Started\n");
             clientSocket = serverSocket.accept();
+            //Create thread
+            Thread thread = new Thread();
+            thread.start();
+            System.out.println("not infinite");
+        }
+    }
+
+    @Override
+    public void run() {
+        System.out.println("1");
+        //Size of message received from client
+        int receivedMessageSize = 2;
+        //byte array buffer
+        byte[] byteBuffer = new byte[BUFSIZE];
+
+        try {
+                    System.out.println("2");
+
             in = clientSocket.getInputStream();     //To read data from socket
             out = clientSocket.getOutputStream();   //To write data to socket
             Board board;
-
+            System.out.println("not in while yet");
             //Recevieve until client closes connection (-1)
             try {
                 while ((receivedMessageSize = in.read(byteBuffer)) != -1) {
+                 System.out.println("here now");
                     //Client can start session
                     if (byteBuffer[0] == (byte) 0) {
                         //Begin session
@@ -104,6 +121,7 @@ public class C4Server {
                         //Send client new move
                         out.write(new byte[]{1, tokenInput}, 0, receivedMessageSize);
                     }
+                    System.out.println("here end");
                 }
                 // If Client Crash for some reason, Print out message, but Server will keep running
             } catch (IOException e) {
@@ -113,6 +131,8 @@ public class C4Server {
                 System.out.println("Closing Client Socket...\n");
                 clientSocket.close();
             }
+        } catch (IOException ex) {
+            Logger.getLogger(C4Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
