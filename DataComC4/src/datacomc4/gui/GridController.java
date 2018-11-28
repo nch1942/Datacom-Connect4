@@ -59,7 +59,7 @@ public class GridController implements Initializable {
     private final String aiTurn = "AI";
     private Circle lastHighlight = new Circle();
     private C4Client client;
-    private byte[] serverPackage;
+    private byte[] serverPackage = new byte[2];
 
 
 
